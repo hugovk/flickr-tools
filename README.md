@@ -3,10 +3,7 @@ taggr.py
 
 Command-line Python script to add machine tags on Flickr from EXIF data.
 
-Initial version based on Paul Mison's EXIF machine tagger Perl script, but without the database:
-
-    http://blech.typepad.com/blog/2008/11/flickr-exif-machine-tags.html
-    http://husk.org/code/flickr_exif_machinetag.pl
+Initial version based on [Paul Mison's EXIF machine tagger](http://blech.typepad.com/blog/2008/11/flickr-exif-machine-tags.html) [Perl script](http://husk.org/code/flickr_exif_machinetag.pl), but without the database.
 
 Authentication
 --------------
