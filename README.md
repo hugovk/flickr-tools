@@ -46,3 +46,28 @@ optional arguments:
   -h, --help  show this help message and exit
   -x, --test  Test mode: go through the motions but don't add any tags
 ```
+
+viewr.py
+--------
+
+Add photos to Flickr groups based on number of views.
+
+
+```
+usage: viewr.py [-h] [-n NUMBER] [-b BEGIN] [-t TAGS] [-x] [-i]
+
+Add things to groups depending on view count.
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -n NUMBER, --number NUMBER
+                        Number of photos to process. If left blank, keep going
+                        (default: None)
+  -b BEGIN, --begin BEGIN
+                        Photo to begin at (default: 1)
+  -t TAGS, --tags TAGS  Process images with these tags (default: None)
+  -x, --test            Test mode: go through the motions but don't add any
+                        photos (default: False)
+  -i, --info            Show information about my groups and exit (default:
+                        False)
+```
