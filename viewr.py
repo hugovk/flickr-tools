@@ -8,9 +8,6 @@ import os
 import sys
 import xml.etree.ElementTree as ET
 
-try: import timing # optional
-except: pass
-
 def query_yes_no(question, default="yes"):
     """Ask a yes/no question via raw_input() and return their answer.
 
@@ -142,11 +139,26 @@ if __name__ == "__main__":
         help="Photo to begin at")
     parser.add_argument('-t', '--tags',
         help="Process images with these tags")
+    sort_options = ['date-posted-asc', 'date-posted-desc', 'date-taken-asc', 'date-taken-desc', 'interestingness-desc', 'interestingness-asc', 'relevance']
+    parser.add_argument('-s', '--sort', 
+        default='interestingness-desc', # approximation to sort-by-views
+         choices=sort_options,
+        help="The order in which to process photos.")
+    parser.add_argument('-r', '--random', action='store_true',
+        help="Choose a sort method at random")
     parser.add_argument('-x', '--test', action='store_true',
         help="Test mode: go through the motions but don't add any photos")
     parser.add_argument('-i', '--info', action='store_true',
         help="Show information about my groups and exit")
     args = parser.parse_args()
+
+    try: import timing # optional
+    except: pass
+
+    if args.random:
+        from random import choice
+        args.sort = choice(sort_options)
+        print "Random sort order:", args.sort
 
     api_key = unicode(os.environ['FLICKR_API_KEY'])
     api_secret = unicode(os.environ['FLICKR_SECRET'])
@@ -187,7 +199,7 @@ if __name__ == "__main__":
         for photo in flickr.walk(tag_mode = 'all',
             privacy_filter = '1', # public
             user_id = 'me',
-            sort = 'interestingness-desc', # approximation to sort-by-views
+            sort = args.sort,
             tags = args.tags):
 
             # print(len(VIEW_GROUPS)), VIEW_GROUPS
