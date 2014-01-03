@@ -85,6 +85,30 @@ optional arguments:
   -nc, --noclobber      Don't clobber pre-exisiting files (default: False)
   -n, --number          Prefix filenames with a serial number (default: False)
 ```
+
+onthisday.py
+------------
+
+[Example output:](https://twitter.com/hugovk/status/418366422344282112)
+
+> [#OnThisDay](https://twitter.com/search?q=%23OnThisDay&src=hash) 2013: http://flic.kr/p/dGrjUj  2011: http://flic.kr/p/98wFvG  2010: http://flic.kr/p/7t9aDT  2008: http://flic.kr/p/4jSx8c
+
+```
+usage: onthisday.py [-h] [-u USERNAME] [-f FIRST_YEAR] [-x]
+
+Tweet your old Flickr photos on this day in history.
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -u USERNAME, --username USERNAME
+                        Your Twitter username (default: hugovk)
+  -f FIRST_YEAR, --first_year FIRST_YEAR
+                        Oldest year to check for photos. If 'None', checks the
+                        year of your oldest uploaded photo. (default: 2004)
+  -x, --test            Test mode: go through the motions but don't add any
+                        photos (default: False)
+```
+
 taggr.py
 --------
 
