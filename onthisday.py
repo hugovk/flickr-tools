@@ -37,18 +37,24 @@ if __name__ == "__main__":
         formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument('-u', '--username', default="hugovk",
         help="Your Twitter username")
-    parser.add_argument('-f', '--first_year', default=2004, type=int,
-        help="Oldest year to check for photos. If 'None', checks the year of your oldest uploaded photo.")
+    parser.add_argument('-y', '--earliest-year', default=2004, type=int,
+        help="Earliest year to check for photos. If 'None', uses the year of your oldest uploaded photo.")
     parser.add_argument('-x', '--test', action='store_true',
         help="Test mode: go through the motions but don't add any photos")
+    parser.add_argument('-k', '--api-key', 
+        help="Flickr API key. If not given, looks in FLICKR_API_KEY environment variable")
+    parser.add_argument('-s', '--api-secret', 
+        help="Flickr API secret. If not given, looks in FLICKR_SECRET environment variable")
     args = parser.parse_args()
 
     try: import timing # optional
     except: pass
 
-    api_key = unicode(os.environ['FLICKR_API_KEY'])
-    api_secret = unicode(os.environ['FLICKR_SECRET'])
-    flickr = flickrapi.FlickrAPI(api_key, api_secret)
+    if not args.api_key:
+        args.api_key = os.environ['FLICKR_API_KEY']
+    if not args.api_secret:
+        args.api_secret = os.environ['FLICKR_SECRET']
+    flickr = flickrapi.FlickrAPI(args.api_key, args.api_secret)
     (token, frob) = flickr.get_token_part_one(perms='write')
     if not token: raw_input("Press ENTER after you authorised this program")
     flickr.get_token_part_two((token, frob))
@@ -57,8 +63,8 @@ if __name__ == "__main__":
     my_nsid = my_nsid.getchildren()[0].attrib['nsid']
     print "My NSID:", my_nsid
 
-    if args.first_year:
-        first_year = args.first_year
+    if args.earliest_year:
+        earliest_year = args.earliest_year
     else:
         person_info = flickr.people_getInfo(user_id = my_nsid)
         firstdatetaken = person_info.getchildren()[0].find('photos').find('firstdatetaken').text
@@ -66,14 +72,14 @@ if __name__ == "__main__":
         # User may have posted (for example, like me) an 19th century photo, 
         # but it doesn't matter, this is just an upper limit which may not be reached
         # before the max tweet length is reached.
-        first_year = int(firstdatetaken[:4])
+        earliest_year = int(firstdatetaken[:4])
 
-    print "First year:", first_year
+    print "Earliest year:", earliest_year
 
     now = datetime.datetime.now()
     tweet = "#OnThisDay"
     found = 0
-    for year in range(now.year-1, first_year-1, -1):
+    for year in range(now.year-1, earliest_year-1, -1):
         print "Checking", year
 
         # Find a photo from this year
