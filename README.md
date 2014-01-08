@@ -94,7 +94,8 @@ onthisday.py
 > [#OnThisDay](https://twitter.com/search?q=%23OnThisDay&src=hash) 2013: http://flic.kr/p/dGrjUj  2011: http://flic.kr/p/98wFvG  2010: http://flic.kr/p/7t9aDT  2008: http://flic.kr/p/4jSx8c
 
 ```
-usage: onthisday.py [-h] [-u USERNAME] [-f FIRST_YEAR] [-x]
+usage: onthisday.py [-h] [-u USERNAME] [-y EARLIEST_YEAR] [-x] [-k API_KEY]
+                    [-s API_SECRET]
 
 Tweet your old Flickr photos on this day in history.
 
@@ -102,11 +103,18 @@ optional arguments:
   -h, --help            show this help message and exit
   -u USERNAME, --username USERNAME
                         Your Twitter username (default: hugovk)
-  -f FIRST_YEAR, --first_year FIRST_YEAR
-                        Oldest year to check for photos. If 'None', checks the
-                        year of your oldest uploaded photo. (default: 2004)
+  -y EARLIEST_YEAR, --earliest-year EARLIEST_YEAR
+                        Earliest year to check for photos. If 'None', checks
+                        the year of your oldest uploaded photo. (default:
+                        2004)
   -x, --test            Test mode: go through the motions but don't add any
                         photos (default: False)
+  -k API_KEY, --api-key API_KEY
+                        Flickr API key. If not given, looks in FLICKR_API_KEY
+                        environment variable (default: None)
+  -s API_SECRET, --api-secret API_SECRET
+                        Flickr API secret. If not given, looks in
+                        FLICKR_SECRET environment variable (default: None)
 ```
 
 taggr.py
@@ -117,11 +125,29 @@ Add machine tags on Flickr from EXIF data.
 Initial version based on [Paul Mison's EXIF machine tagger](http://blech.typepad.com/blog/2008/11/flickr-exif-machine-tags.html) [Perl script](http://husk.org/code/flickr_exif_machinetag.pl), but without the database.
 
 ```
-usage: taggr.py [-h] [-x]
+usage: taggr.py [-h] [-x] [-a] [-b BEGIN] [-n NUMBER] [-d] [-j] [-k API_KEY]
+                [-s API_SECRET]
+
+Machine tag photos from EXIF.
 
 optional arguments:
-  -h, --help  show this help message and exit
-  -x, --test  Test mode: go through the motions but don't add any tags
+  -h, --help            show this help message and exit
+  -x, --test            Test mode: go through the motions but don't add any
+                        tags
+  -a, --all             Process all, regardless of previous processing
+  -b BEGIN, --begin BEGIN
+                        Photo to begin at
+  -n NUMBER, --number NUMBER
+                        Number of photos to process. If left blank, keep going
+  -d, --description     Include description as tags
+  -j, --jatkuu          When reaching a previously processed photo, continue
+                        to the next instead of exiting
+  -k API_KEY, --api-key API_KEY
+                        Flickr API key. If not given, looks in FLICKR_API_KEY
+                        environment variable
+  -s API_SECRET, --api-secret API_SECRET
+                        Flickr API secret. If not given, looks in
+                        FLICKR_SECRET environment variable
 ```
 
 viewr.py
