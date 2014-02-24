@@ -71,28 +71,35 @@ if __name__ == '__main__':
     if not token: raw_input("Press ENTER after you authorized this program")
     flickr.get_token_part_two((token, frob))
 
-    photo_set = flickr.photosets_getPhotos(photoset_id=args.setid)
-    photo_set = photo_set[0]
-    total = str(len(photo_set))
-    print total, "photos in set"
+    page = 0
+    pages = 1 # may be higher, we'll find out later
 
-    for i, photo in enumerate(photo_set):
-        number = str(i + 1).zfill(len(total))
-        photo_id = photo.attrib['id']
-        photo_info = flickr.photos_getInfo(photo_id=photo_id)
-        photo_info = photo_info[0]
-        secret=photo_info.attrib['secret']
-        oSecret=photo_info.attrib['originalsecret']
-        if args.title:
-            photo_title = photo.attrib['title']
-        else:
-            photo_title = None
+    while page < pages: 
+        page += 1
+        photo_set = flickr.photosets_getPhotos(photoset_id=args.setid, page=page)
+        photo_set = photo_set[0]
+        print photo_set.attrib['total'], "photos in set"
+        pages = int(photo_set.attrib['pages'])
+        print "Processing page", page, "of", pages
+        total = str(len(photo_set))
+
+        for i, photo in enumerate(photo_set):
+            number = str(page-1) + str(i + 1).zfill(len(total))
+            photo_id = photo.attrib['id']
+            photo_info = flickr.photos_getInfo(photo_id=photo_id)
+            photo_info = photo_info[0]
+            secret=photo_info.attrib['secret']
+            oSecret=photo_info.attrib['originalsecret']
+            if args.title:
+                photo_title = photo.attrib['title']
+            else:
+                photo_title = None
             
-        if args.size == "o":
-            download("http://farm%s.static.flickr.com/%s/%s_%s_o.jpg" % (photo.attrib['farm'], photo.attrib['server'], photo.attrib['id'],oSecret), 
-            photo_title, number)
-        else:
-            download("http://farm%s.static.flickr.com/%s/%s_%s_%s.jpg" % (photo.attrib['farm'], photo.attrib['server'], photo.attrib['id'], 
-            secret, args.size), photo_title, number)
+            if args.size == "o":
+                download("http://farm%s.static.flickr.com/%s/%s_%s_o.jpg" % (photo.attrib['farm'], photo.attrib['server'], photo.attrib['id'],oSecret), 
+                photo_title, number)
+            else:
+                download("http://farm%s.static.flickr.com/%s/%s_%s_%s.jpg" % (photo.attrib['farm'], photo.attrib['server'], photo.attrib['id'], 
+                secret, args.size), photo_title, number)
 
 # End of file
