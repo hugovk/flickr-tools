@@ -1,0 +1,3 @@
+flickrapi
+PyYAML
+twitter
