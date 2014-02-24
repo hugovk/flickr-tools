@@ -3,6 +3,7 @@
 Add photos to Flickr groups based on number of views.
 """
 import argparse
+import datetime
 import flickrapi # http://www.stuvel.eu/flickrapi
 import os
 import sys
@@ -193,7 +194,11 @@ if __name__ == "__main__":
     # Initialise membership
     for i, group in enumerate(VIEW_GROUPS):
         VIEW_GROUPS[i].extend([group[0] in my_groups])
-        
+    
+    # For midnight reset
+    VIEW_GROUPS_BACKUP = list(VIEW_GROUPS)
+    lastday = datetime.datetime.utcnow().day
+    
     number, processed, added = 0, 0, 0
     try:
         for photo in flickr.walk(tag_mode = 'all',
@@ -201,6 +206,14 @@ if __name__ == "__main__":
             user_id = 'me',
             sort = args.sort,
             tags = args.tags):
+
+            # Check if UTC day changed. If so, restore mappings for renewed daily limits
+            today = datetime.datetime.utcnow().day
+            print lastday, today, len(VIEW_GROUPS_BACKUP), len(VIEW_GROUPS)
+            if lastday != today:
+                print "Reset groups list"
+                lastday = today
+                VIEW_GROUPS = list(VIEW_GROUPS_BACKUP)
 
             # print(len(VIEW_GROUPS)), VIEW_GROUPS
             if len(VIEW_GROUPS) == 0:
