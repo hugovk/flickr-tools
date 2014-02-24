@@ -52,7 +52,8 @@ def download(url, title):
     return
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description='Download a Flickr set', formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+    parser = argparse.ArgumentParser(description='Download random photos from your account', 
+    formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument("-u", "--username", help="The username to download from.", 
         default="example")
     parser.add_argument("-n", "--number", help="Number of photos to download", 
