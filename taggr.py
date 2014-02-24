@@ -109,7 +109,9 @@ def set_flickr_tags(photo_id, new_tags, old_tags):
                 print "Flickr error:", sys.exc_info()[0]
                 # Move on to the next photo
             except: pass
-        print_it("  Set " + str(len(fresh_tags)) + " tags for " + str(photo_id) + ": " + tag_string)
+        if len(fresh_tags) > 1: tag_s = " tags"
+        else:                   tag_s = " tag"
+        print_it("  Set " + str(len(fresh_tags)) + tag_s + " for " + str(photo_id) + ": " + tag_string)
 
 def set_machine_tags(photo_id):
     """Get the EXIF from Flickr, generate some machine tags and add them to the photo"""
