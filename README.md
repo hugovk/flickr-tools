@@ -3,6 +3,12 @@ Flickr tools
 
 Command-line Python scripts to do stuff with Flickr.
 
+Installation
+------------
+
+The easiest way is to put these somewhere found in your PATH. Install prerequisites with `pip install -r requirements.txt`
+
+
 Authentication
 --------------
 
@@ -89,9 +95,11 @@ optional arguments:
 onthisday.py
 ------------
 
-[Example output:](https://twitter.com/hugovk/status/418366422344282112)
+Example tweet:
 
 > [#OnThisDay](https://twitter.com/search?q=%23OnThisDay&src=hash) 2013: http://flic.kr/p/dGrjUj  2011: http://flic.kr/p/98wFvG  2010: http://flic.kr/p/7t9aDT  2008: http://flic.kr/p/4jSx8c
+
+https://twitter.com/hugovk/status/418366422344282112
 
 ```
 usage: onthisday.py [-h] [-u USERNAME] [-y EARLIEST_YEAR] [-x] [-k API_KEY]
