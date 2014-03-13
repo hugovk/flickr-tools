@@ -2,9 +2,9 @@
 """
 Unit tests for flickr_set_downloadr.py
 """
-# import re
 import unittest
 import flickr_set_downloadr
+
 
 class TestSequenceFunctions(unittest.TestCase):
 
@@ -50,3 +50,5 @@ class TestSequenceFunctions(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+
+# End of file

@@ -4,10 +4,11 @@ Add photos to Flickr groups based on number of views.
 """
 import argparse
 import datetime
-import flickrapi # http://www.stuvel.eu/flickrapi
+import flickrapi  # http://www.stuvel.eu/flickrapi
 import os
 import sys
-import xml.etree.ElementTree as ET
+# import xml.etree.ElementTree as ET
+
 
 def query_yes_no(question, default="yes"):
     """Ask a yes/no question via raw_input() and return their answer.
@@ -19,9 +20,9 @@ def query_yes_no(question, default="yes"):
 
     The "answer" return value is one of "yes" or "no".
     """
-    valid = {"yes":True,   "y":True,  "ye":True,
-             "no":False,     "n":False}
-    if default == None:
+    valid = {"yes": True, "y": True, "ye": True,
+             "no": False, "n": False}
+    if default is None:
         prompt = " [y/n] "
     elif default == "yes":
         prompt = " [Y/n] "
@@ -38,8 +39,8 @@ def query_yes_no(question, default="yes"):
         elif choice in valid:
             return valid[choice]
         else:
-            sys.stdout.write("Please respond with 'yes' or 'no' "\
-                             "(or 'y' or 'n').\n")
+            sys.stdout.write(
+                "Please respond with 'yes' or 'no' (or 'y' or 'n').\n")
 
 VIEW_GROUPS = [
     # group_id          min_views
@@ -67,6 +68,7 @@ VIEW_GROUPS = [
     ["14813384@N00",    25],
 ]
 
+
 # cmd.exe cannot do Unicode so encode first
 def print_it(text):
     print text.encode('utf-8')
@@ -80,10 +82,13 @@ def process_photo(photo_id):
         min_views = group[1]
         membership = group[2]
         if not photo_added and views > min_views:
-            print_it("\n" + str(number) + ") Photo " +photo_id + " has " + str(views) + " views and is eligable for " + nsid + " (min: " + str(min_views) + ")")
+            print_it(
+                "\n" + str(number) + ") Photo " + photo_id + " has "
+                + str(views) + " views and is eligable for " + nsid
+                + " (min: " + str(min_views) + ")")
 
             if not membership:
-                group_info = flickr.groups_getInfo(group_id = nsid)
+                group_info = flickr.groups_getInfo(group_id=nsid)
                 name = group_info.getchildren()[0].find('name').text
                 rules = group_info.getchildren()[0].find('rules').text
                 if rules:
@@ -92,14 +97,14 @@ def process_photo(photo_id):
                     print rules
                     print "----------------------------"
                     agree = query_yes_no("Agree to rules and join group?")
-                    flickr.groups_join(group_id  = nsid, accept_rules = agree)
+                    flickr.groups_join(group_id=nsid, accept_rules=agree)
                 else:
-                    flickr.groups_join(group_id  = nsid)
+                    flickr.groups_join(group_id=nsid)
                 VIEW_GROUPS[i][2] = True
 
             if not args.test:
                 try:
-                    flickr.groups_pools_add(photo_id = photo_id, group_id = nsid)
+                    flickr.groups_pools_add(photo_id=photo_id, group_id=nsid)
                     print "    Photo added"
                     added += 1
                     photo_added = True
@@ -109,17 +114,16 @@ def process_photo(photo_id):
                     print "    Flickr", error
                     if error == "Error: 3: Photo already in pool":
                         print "      Skip photo"
-                        skip_photo = True
-                        photo_added = True # don't add to any other pools
-                        break # Don't bother checking this photo any more
+                        photo_added = True  # Don't add to any other pools
+                        break  # Don't bother checking this photo any more
                     if error == "Error: 4: Photo in maximum number of pools":
                         print "      Skip photo"
-                        break # Don't bother checking this photo any more
+                        break  # Don't bother checking this photo any more
                     elif error == "Error: 5: Photo limit reached":
                         # Don't bother checking this group again
                         print "      Skip group until next time"
                         del VIEW_GROUPS[i]
-                    
+
                 except:
                     error = str(sys.exc_info()[1])
                     print "    Error", error
@@ -127,33 +131,42 @@ def process_photo(photo_id):
         elif photo_added and views > min_views:
             print "Remove from group", nsid, ":", min_views
             try:
-                flickr.groups_pools_remove(photo_id = photo_id, group_id  = nsid)
+                flickr.groups_pools_remove(photo_id=photo_id, group_id=nsid)
             except:
                 pass
     return added
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Add things to groups depending on view count.", formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-    parser.add_argument('-n', '--number', type=int, 
+    parser = argparse.ArgumentParser(
+        description="Add things to groups depending on view count.",
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+    parser.add_argument(
+        '-n', '--number', type=int,
         help="Number of photos to process. If left blank, keep going")
-    parser.add_argument('-b', '--begin', type=int, default=1,
+    parser.add_argument(
+        '-b', '--begin', type=int, default=1,
         help="Photo to begin at")
-    parser.add_argument('-t', '--tags',
+    parser.add_argument(
+        '-t', '--tags',
         help="Process images with these tags")
-    sort_options = ['date-posted-asc', 'date-posted-desc', 'date-taken-asc', 'date-taken-desc', 'interestingness-desc', 'interestingness-asc', 'relevance']
-    parser.add_argument('-s', '--sort', 
-        default='interestingness-desc', # approximation to sort-by-views
-         choices=sort_options,
+    sort_options = [
+        'date-posted-asc', 'date-posted-desc', 'date-taken-asc',
+        'date-taken-desc', 'interestingness-desc', 'interestingness-asc',
+        'relevance']
+    parser.add_argument(
+        '-s', '--sort',
+        default='interestingness-desc',  # Approximation to sort-by-views
+        choices=sort_options,
         help="The order in which to process photos.")
-    parser.add_argument('-r', '--random', action='store_true',
+    parser.add_argument(
+        '-r', '--random', action='store_true',
         help="Choose a sort method at random")
-    parser.add_argument('-x', '--test', action='store_true',
+    parser.add_argument(
+        '-x', '--test', action='store_true',
         help="Test mode: go through the motions but don't add any photos")
-    parser.add_argument('-i', '--info', action='store_true',
-        help="Show information about my groups and exit")
     args = parser.parse_args()
 
-    try: import timing # optional
+    try: import timing  # optional
     except: pass
 
     if args.random:
@@ -165,13 +178,14 @@ if __name__ == "__main__":
     api_secret = unicode(os.environ['FLICKR_SECRET'])
     flickr = flickrapi.FlickrAPI(api_key, api_secret)
     (token, frob) = flickr.get_token_part_one(perms='write')
-    if not token: raw_input("Press ENTER after you authorised this program")
+    if not token:
+        raw_input("Press ENTER after you authorised this program")
     flickr.get_token_part_two((token, frob))
 
-    my_nsid = flickr.people_findByUsername(username = "hugovk")
+    my_nsid = flickr.people_findByUsername(username="hugovk")
     my_nsid = my_nsid.getchildren()[0].attrib['nsid']
     print "My NSID:", my_nsid
-    group_resp = flickr.people_getGroups(user_id = my_nsid)
+    group_resp = flickr.people_getGroups(user_id=my_nsid)
     groups_resp = group_resp.getchildren()[0].getchildren()
     groups = {}
 
@@ -179,35 +193,25 @@ if __name__ == "__main__":
     for group in groups_resp:
         my_groups.append(group.attrib['nsid'])
 
-    if args.info:
-        print "My groups:"
-        print "NSID\tThrottled?\tRemaining\tName"
-        for group in groups_resp:
-            group_nsid = group.attrib['nsid']
-            # group_name = group.attrib['name']
-
-            # Get group info
-            groups[group_nsid] = get_group_info(group_nsid)
-
-        sys.exit(1)
-    
     # Initialise membership
     for i, group in enumerate(VIEW_GROUPS):
         VIEW_GROUPS[i].extend([group[0] in my_groups])
-    
+
     # For midnight reset
     VIEW_GROUPS_BACKUP = list(VIEW_GROUPS)
     lastday = datetime.datetime.utcnow().day
-    
+
     number, processed, added = 0, 0, 0
     try:
-        for photo in flickr.walk(tag_mode = 'all',
-            privacy_filter = '1', # public
-            user_id = 'me',
-            sort = args.sort,
-            tags = args.tags):
+        for photo in flickr.walk(
+                tag_mode='all',
+                privacy_filter='1',  # public
+                user_id='me',
+                sort=args.sort,
+                tags=args.tags):
 
-            # Check if UTC day changed. If so, restore mappings for renewed daily limits
+            # Check if UTC day changed.
+            # If so, restore mappings for renewed daily limits.
             today = datetime.datetime.utcnow().day
             print lastday, today, len(VIEW_GROUPS_BACKUP), len(VIEW_GROUPS)
             if lastday != today:
@@ -217,7 +221,9 @@ if __name__ == "__main__":
 
             # print(len(VIEW_GROUPS)), VIEW_GROUPS
             if len(VIEW_GROUPS) == 0:
-                sys.exit("All groups filled with " + str(added) + " additions to groups")
+                sys.exit(
+                    "All groups filled with "
+                    + str(added) + " additions to groups")
 
             number += 1
             if number < args.begin:
@@ -228,11 +234,11 @@ if __name__ == "__main__":
             photo_added, photo_slept = False, False
             photo_id = photo.get('id')
             try:
-                photo_info = flickr.photos_getInfo(photo_id = photo_id)
+                photo_info = flickr.photos_getInfo(photo_id=photo_id)
             except:
                 # Let's just skip this photo then
                 continue
-            
+
             # Skip those that aren't mine
             owner = photo_info.getchildren()[0].find('owner').attrib['username']
             if owner != "hugovk":
