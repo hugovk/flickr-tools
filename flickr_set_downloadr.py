@@ -8,7 +8,11 @@ from __future__ import print_function
 import argparse
 import os
 import sys
-import urllib2
+try:
+    from urllib2 import urlopen
+except ImportError:
+    from urllib.request import urlopen
+
 # import xml.etree.ElementTree as ET
 
 import flickrapi
@@ -33,7 +37,7 @@ def download(url, title, number):
         print("File already exists, skipping:", file_name)
         return
 
-    u = urllib2.urlopen(url)
+    u = urlopen(url)
     f = open(file_name, 'wb')
     meta = u.info()
     file_size = int(meta.getheaders("Content-Length")[0])
