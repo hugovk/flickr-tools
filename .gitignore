@@ -30,8 +30,10 @@ pip-delete-this-directory.txt
 .tox/
 .coverage
 .cache
-nosetests.xml
+htmlcov/
 coverage.xml
+nosetests.xml
+output.html
 
 # Translations
 *.mo

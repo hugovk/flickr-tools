@@ -1,0 +1,34 @@
+language: python
+python:
+- 2.6
+- 2.7
+- 3.2
+- 3.3
+- 3.4
+- pypy
+
+matrix:
+  allow_failures:
+  - python: 2.6
+  - python: 3.2
+  - python: 3.3
+  - python: 3.4
+  - python: pypy
+
+install:
+- pip install coveralls
+
+script: coverage run --source=flickr_set_downloadr.py ./test_flickr_set_downloadr.py
+
+after_success:
+  coverage report
+  coveralls
+
+env:
+  global:
+  - secure: "Q53QlOOdQ6Zsuow9AH+a63RKqAutOohTs+3cK/x449AgBxLBZuvXYy3za3cQYGAMuYsOJ
+KNUNz7VzLzgo33/l9TeVpMFMYtADbbpjFWICez3QpRW4CIzInGK2xejxZmlTM4XlZqpiPTlL/K0x2wMA
+c19lEvXmLdoe2DqTCYY6iY="
+  - secure: "I6GK5RzkiW8SZfxjriL27dOS1N9oB0AOEkRCaYbTskuOXGaIobTmpvQURacbO2cRtKi3r
+shV/i0absNrrrKLRmLRDrjmit1pgupIzRJ9uthz/2fhQ/6KFzn2dPAzae8DoU80aJ6ODTHrpvqM+DF4D
+rwtm9V9o/1gNicxjFk95A8="
