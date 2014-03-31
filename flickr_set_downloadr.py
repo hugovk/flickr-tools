@@ -4,6 +4,7 @@
 Flickr set downloader
 Based on http://pastebin.com/JEJiCNRd
 """
+from __future__ import print_function
 import argparse
 import os
 import sys
@@ -29,14 +30,14 @@ def download(url, title, number):
         file_name = number + "-" + file_name
 
     if args.noclobber and os.path.exists(file_name):
-        print "File already exists, skipping:", file_name
+        print("File already exists, skipping:", file_name)
         return
 
     u = urllib2.urlopen(url)
     f = open(file_name, 'wb')
     meta = u.info()
     file_size = int(meta.getheaders("Content-Length")[0])
-    print "Downloading: %s Bytes: %s" % (file_name, file_size)
+    print("Downloading: %s Bytes: %s" % (file_name, file_size))
 
     file_size_dl = 0
     block_sz = 8192
@@ -50,7 +51,7 @@ def download(url, title, number):
         status = r"%10d  [%3.2f%%]" % (
             file_size_dl, file_size_dl * 100. / file_size)
         status = status + chr(8)*(len(status)+1)
-        print status,
+        print(status,)
 
     f.close()
     return
@@ -61,12 +62,12 @@ def validate_setid(setid):
         return setid
 
     if "flickr.com" in setid:
-        print "URL:", setid
+        print("URL:", setid)
         setid = setid.rstrip("/")
         sets_text = "/sets/"
         sets_pos = setid.find(sets_text)
         setid = setid[sets_pos+len(sets_text):]
-        print "Set ID:", setid
+        print("Set ID:", setid)
         return setid
 
 
@@ -126,9 +127,9 @@ if __name__ == '__main__':
         photo_set = flickr.photosets_getPhotos(
             photoset_id=args.setid, page=page)
         photo_set = photo_set[0]
-        print photo_set.attrib['total'], "photos in set"
+        print(photo_set.attrib['total'], "photos in set")
         pages = int(photo_set.attrib['pages'])
-        print "Processing page", page, "of", pages
+        print("Processing page", page, "of", pages)
         total = str(len(photo_set))
 
         for i, photo in enumerate(photo_set):
