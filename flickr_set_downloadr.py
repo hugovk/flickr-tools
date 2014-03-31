@@ -19,7 +19,9 @@ api_secret = os.environ['FLICKR_SECRET']
 def download(url, title, number):
     if title:
         file_name = title + ".jpg"
-        file_name = "".join(c for c in file_name if c.isalnum() or c in [' ', '.']).rstrip()  # make Windows-safe
+        # Make Windows-safe
+        file_name = "".join(
+            c for c in file_name if c.isalnum() or c in [' ', '.']).rstrip()
     else:
         file_name = url.split('/')[-1]
 
@@ -77,10 +79,19 @@ if __name__ == '__main__':
     parser.add_argument(
         "-s", "--size", default="b",
         choices=("s", "q", "t", "m", "n", "z", "c", "b", "o"),
-        help="The size of photo you want to download. Size must fit the following: s - 75x75, q - 150x150, t - 100 on the longest side, m - 240 on the longest side, n - 320 on the longest side, z - 640 on the longest side, c - 800 on the longest side, \nb - 1024 on the longest side (default), o - original")
+        help="The size of photo you want to download: "
+        "s - 75x75, "
+        "q - 150x150, "
+        "t - 100 on the longest side, "
+        "m - 240 on the longest side, "
+        "n - 320 on the longest side, "
+        "z - 640 on the longest side, "
+        "c - 800 on the longest side, "
+        "b - 1024 on the longest side (default), "
+        "o - original")
     parser.add_argument(
         "-t", "--title", action="store_true",
-        help="Use the title as the filename (TODO ensure title is filesystem-safe)")
+        help="Use the title as the filename")
     parser.add_argument(
         "-nc", "--noclobber", action="store_true",
         help="Don't clobber pre-exisiting files")
@@ -96,7 +107,8 @@ if __name__ == '__main__':
         pass
 
     if args.setid is None:
-        sys.exit("You must specify a photo set to download. \nUse -h for examples.")
+        sys.exit(
+            "You must specify a photo set to download. \nUse -h for examples.")
     else:
         args.setid = validate_setid(args.setid)
 

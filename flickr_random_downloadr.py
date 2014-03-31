@@ -21,7 +21,9 @@ def download(url, title):
     print url
     if title:
         file_name = title + ".jpg"
-        file_name = "".join(c for c in file_name if c.isalnum() or c in [' ', '.']).rstrip()  # make Windows-safe
+        # Make Windows-safe
+        file_name = "".join(
+            c for c in file_name if c.isalnum() or c in [' ', '.']).rstrip()
     else:
         file_name = url.split('/')[-1]
 
@@ -44,7 +46,8 @@ def download(url, title):
 
         file_size_dl += len(buffer)
         f.write(buffer)
-        status = r"%10d  [%3.2f%%]" % (file_size_dl, file_size_dl * 100. / file_size)
+        status = r"%10d  [%3.2f%%]" % \
+            (file_size_dl, file_size_dl * 100. / file_size)
         status = status + chr(8)*(len(status)+1)
         print status,
 
@@ -65,10 +68,19 @@ if __name__ == '__main__':
     parser.add_argument(
         "-s", "--size", default="b",
         choices=("s", "q", "t", "m", "n", "z", "c", "b", "o"),
-        help="The size of photo you want to download. Size must fit the following: s - 75x75, q - 150x150, t - 100 on the longest side, m - 240 on the longest side, n - 320 on the longest side, z - 640 on the longest side, c - 800 on the longest side, \nb - 1024 on the longest side (default), o - original")
+        help="The size of photo you want to download: "
+        "s - 75x75, "
+        "q - 150x150, "
+        "t - 100 on the longest side, "
+        "m - 240 on the longest side, "
+        "n - 320 on the longest side, "
+        "z - 640 on the longest side, "
+        "c - 800 on the longest side, "
+        "b - 1024 on the longest side (default), "
+        "o - original")
     parser.add_argument(
         "-t", "--title", action="store_true",
-        help="Use the title as the filename (TODO ensure title is filesystem-safe)")
+        help="Use the title as the filename")
     parser.add_argument(
         "-nc", "--noclobber", action="store_true",
         help="Don't clobber pre-exisiting files")
@@ -94,7 +106,8 @@ if __name__ == '__main__':
 
     # Find how many photos they have
     person_info = flickr.people_getInfo(user_id=user_nsid)
-    number_of_photos = person_info.getchildren()[0].find('photos').find('count').text
+    number_of_photos = person_info.getchildren()[0].find(
+        'photos').find('count').text
     print "User has", number_of_photos, "photos"
     if int(number_of_photos) == 0:
         sys.exit()

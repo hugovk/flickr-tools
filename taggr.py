@@ -59,7 +59,8 @@ EXPANDABLES = [
     ['Helsinki',
         ['Helsingfors', 'Uusimaa', 'Nyland', 'Finland', 'Suomi']],
     ['HEL',
-        ['Helsingfors', 'Uusimaa', 'Nyland', 'Finland', 'Suomi', 'airport', 'lentoasema', 'Helsinki-Vantaa airport']],
+        ['Helsingfors', 'Uusimaa', 'Nyland', 'Finland', 'Suomi',
+            'airport', 'lentoasema', 'Helsinki-Vantaa airport']],
     ['wintercycling',
         ['bicycle', 'cycle', 'polkupyörä', 'fillari', 'cycling', 'bike']],
     ['bike',
@@ -120,7 +121,9 @@ def set_flickr_tags(photo_id, new_tags, old_tags):
             tag_s = " tags"
         else:
             tag_s = " tag"
-        print_it("  Set " + str(len(fresh_tags)) + tag_s + " for " + str(photo_id) + ": " + tag_string)
+        print_it(
+            "  Set " + str(len(fresh_tags)) + tag_s +
+            " for " + str(photo_id) + ": " + tag_string)
 
 
 def set_machine_tags(photo_id):
@@ -190,7 +193,8 @@ def uniquify(seq):
 
 def string_in_list(my_string, things):
     """Check if string is in list, ignore case, hyphens, spaces and quotes"""
-    return re.sub(r"[- ]", "", my_string).lower() in (thing.lower() for thing in things)
+    return re.sub(r"[- ]", "", my_string).lower() in (
+        thing.lower() for thing in things)
 
 
 def expand_tags(tag_to_find, expanded_tags, source_tags, result_tags):
@@ -352,13 +356,16 @@ if __name__ == "__main__":
         help="Include description as tags")
     parser.add_argument(
         '-j', '--jatkuu', action='store_true',
-        help="When reaching a previously processed photo, continue to the next instead of exiting")
+        help="When reaching a previously processed photo, "
+        "continue to the next instead of exiting")
     parser.add_argument(
         '-k', '--api-key',
-        help="Flickr API key. If not given, looks in FLICKR_API_KEY environment variable")
+        help="Flickr API key. "
+        "If not given, looks in FLICKR_API_KEY environment variable")
     parser.add_argument(
         '-s', '--api-secret',
-        help="Flickr API secret. If not given, looks in FLICKR_SECRET environment variable")
+        help="Flickr API secret. "
+        "If not given, looks in FLICKR_SECRET environment variable")
     args = parser.parse_args()
 
     try:

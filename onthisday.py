@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 """
-Tweet your old Flickr photos on this day in history.
+Tweet your old Flickr photos from this day in history.
 """
 import argparse
 import datetime
@@ -42,7 +42,8 @@ def tweet_it(string, credentials):
         print "(Test mode, not actually tweeting)"
     else:
         result = t.statuses.update(status=string)
-        url = "http://twitter.com/" + result['user']['screen_name'] + "/status/" + result['id_str']
+        url = "http://twitter.com/" + \
+            result['user']['screen_name'] + "/status/" + result['id_str']
         print "Tweeted:\n" + url
         if not args.no_web:
             webbrowser.open(url, new=2)  # 2 = open in a new tab, if possible
@@ -154,7 +155,8 @@ if __name__ == "__main__":
         help="YAML file location containing Twitter keys and secrets")
     parser.add_argument(
         '-e', '--earliest-year', default=2004, type=int,
-        help="Earliest year to check for photos. If 'None', uses the year of your oldest uploaded photo.")
+        help="Earliest year to check for photos. "
+        "If 'None', uses the year of your oldest uploaded photo.")
     parser.add_argument(
         '-6', '--six-months', action='store_true',
         help="Show photos from six months ago instead of on this day")
@@ -163,10 +165,12 @@ if __name__ == "__main__":
         help="Test mode: go through the motions but don't add any photos")
     parser.add_argument(
         '-k', '--api-key',
-        help="Flickr API key. If not given, looks in FLICKR_API_KEY environment variable")
+        help="Flickr API key. "
+        "If not given, looks in FLICKR_API_KEY environment variable")
     parser.add_argument(
         '-s', '--api-secret',
-        help="Flickr API secret. If not given, looks in FLICKR_SECRET environment variable")
+        help="Flickr API secret. "
+        "If not given, looks in FLICKR_SECRET environment variable")
     parser.add_argument(
         '-nw', '--no-web', action='store_true',
         help="Don't open a web browser to show the tweeted tweet")
@@ -200,7 +204,8 @@ if __name__ == "__main__":
         earliest_year = args.earliest_year
     else:
         person_info = flickr.people_getInfo(user_id=my_nsid)
-        firstdatetaken = person_info.getchildren()[0].find('photos').find('firstdatetaken').text
+        firstdatetaken = person_info.getchildren()[0].find(
+            'photos').find('firstdatetaken').text
 
         # User may have posted (for example, like me) an 19th century photo,
         # but it doesn't matter, this is just an upper limit which may not be

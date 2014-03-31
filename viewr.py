@@ -166,8 +166,10 @@ if __name__ == "__main__":
         help="Test mode: go through the motions but don't add any photos")
     args = parser.parse_args()
 
-    try: import timing  # optional
-    except: pass
+    try:
+        import timing  # optional
+    except:
+        pass
 
     if args.random:
         from random import choice
@@ -240,9 +242,12 @@ if __name__ == "__main__":
                 continue
 
             # Skip those that aren't mine
-            owner = photo_info.getchildren()[0].find('owner').attrib['username']
+            owner = photo_info.getchildren()[0].find(
+                'owner').attrib['username']
             if owner != "hugovk":
-                print "\n"+str(number)+") Photo "+photo_id+" not mine, skipping"
+                print(
+                    "\n" + str(number) + ") Photo " +
+                    photo_id + " not mine, skipping")
                 continue
 
             views = int(photo_info.find('photo').attrib['views'])

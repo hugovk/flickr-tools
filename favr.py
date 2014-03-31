@@ -9,8 +9,10 @@ import sys
 import time
 # import xml.etree.ElementTree as ET
 
-try: import timing  # optional
-except: pass
+try:
+    import timing  # optional
+except:
+    pass
 
 
 def print_it(text):
@@ -36,7 +38,8 @@ def get_faves_set_id():
 
 def generate_description():
     timestamp = time.strftime('%d %B %Y')
-    description = "Set automatically generated on " + timestamp + " by https://github.com/hugovk/flickr-tools/blob/master/favr.py"
+    description = "Set automatically generated on " + timestamp + \
+        " by https://github.com/hugovk/flickr-tools/blob/master/favr.py"
     return description
 
 
@@ -74,7 +77,8 @@ def add_to_faves_set(photo_id, faves_set_id):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
-        description="Create a set containing your photos that others marked favourite. Needs a Flickr Pro account.",
+        description="Create a set containing your photos that others marked "
+        "favourite. Needs a Flickr Pro account.",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument(
         '-t', '--title', default="Your favourites",
