@@ -22,8 +22,8 @@ install:
 script: coverage run --source=flickr_set_downloadr.py ./test_flickr_set_downloadr.py
 
 after_success:
-  coverage report
-  coveralls
+- coverage report
+- coveralls
 
 env:
   global:
