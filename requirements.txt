@@ -1,4 +1,4 @@
 # flickrapi pip version doesn't yet support Python 3 so get latest source
-pip install -e hg+https://bitbucket.org/sybren/flickrapi#egg=flickrapi
+-e hg+https://bitbucket.org/sybren/flickrapi#egg=flickrapi
 PyYAML
 twitter
