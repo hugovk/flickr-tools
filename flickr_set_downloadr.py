@@ -8,57 +8,14 @@ from __future__ import print_function
 import argparse
 import os
 import sys
-try:
-    from urllib2 import urlopen
-except ImportError:
-    from urllib.request import urlopen
 
 # import xml.etree.ElementTree as ET
 
 import flickrapi
+import flickr_utils
 
 api_key = os.environ['FLICKR_API_KEY']
 api_secret = os.environ['FLICKR_SECRET']
-
-
-def download(url, title, number):
-    if title:
-        file_name = title + ".jpg"
-        # Make Windows-safe
-        file_name = "".join(
-            c for c in file_name if c.isalnum() or c in [' ', '.']).rstrip()
-    else:
-        file_name = url.split('/')[-1]
-
-    if args.number:
-        file_name = number + "-" + file_name
-
-    if args.noclobber and os.path.exists(file_name):
-        print("File already exists, skipping:", file_name)
-        return
-
-    u = urlopen(url)
-    f = open(file_name, 'wb')
-    meta = u.info()
-    file_size = int(meta.getheaders("Content-Length")[0])
-    print("Downloading: %s Bytes: %s" % (file_name, file_size))
-
-    file_size_dl = 0
-    block_sz = 8192
-    while True:
-        buffer = u.read(block_sz)
-        if not buffer:
-            break
-
-        file_size_dl += len(buffer)
-        f.write(buffer)
-        status = r"%10d  [%3.2f%%]" % (
-            file_size_dl, file_size_dl * 100. / file_size)
-        status = status + chr(8)*(len(status)+1)
-        print(status,)
-
-    f.close()
-    return
 
 
 def validate_setid(setid):
@@ -125,6 +82,7 @@ if __name__ == '__main__':
 
     page = 0
     pages = 1  # may be higher, we'll update it later
+    number = None
 
     while page < pages:
         page += 1
@@ -137,7 +95,8 @@ if __name__ == '__main__':
         total = str(len(photo_set))
 
         for i, photo in enumerate(photo_set):
-            number = str(page-1) + str(i + 1).zfill(len(total))
+            if args.number:
+                number = str(page-1) + str(i + 1).zfill(len(total))
             photo_id = photo.attrib['id']
             photo_info = flickr.photos_getInfo(photo_id=photo_id)
             photo_info = photo_info[0]
@@ -149,16 +108,16 @@ if __name__ == '__main__':
                 photo_title = None
 
             if args.size == "o":
-                download(
+                flickr_utils.download(
                     "http://farm%s.static.flickr.com/%s/%s_%s_o.jpg" %
                     (photo.attrib['farm'], photo.attrib['server'],
                         photo.attrib['id'], oSecret),
-                    photo_title, number)
+                    photo_title, args.noclobber, number)
             else:
-                download(
+                flickr_utils.download(
                     "http://farm%s.static.flickr.com/%s/%s_%s_%s.jpg" %
                     (photo.attrib['farm'], photo.attrib['server'],
                         photo.attrib['id'], secret, args.size),
-                    photo_title, number)
+                    photo_title, args.noclobber, number)
 
 # End of file

@@ -10,7 +10,8 @@ import os
 import sys
 import yaml
 import webbrowser
-from twitter import *  # https://github.com/sixohsix/twitter `pip install twitter`
+# https://github.com/sixohsix/twitter
+from twitter import *  # `pip install twitter`
 
 
 def load_yaml(filename):
