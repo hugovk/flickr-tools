@@ -17,11 +17,18 @@ install:
 - pip install -r requirements.txt
 - pip install coveralls
 
-script: coverage run --source=flickr_set_downloadr.py ./test_flickr_set_downloadr.py
+script:
+- coverage erase
+- coverage run --append --source=flickr_set_downloadr.py ./test_flickr_set_downloadr.py
+- coverage run --append --source=onthisday.py onthisday.py --test --no-web
+- coverage run --append --source=onthisday.py onthisday.py --test --no-web --six-months
 
 after_success:
 - coverage report
 - coveralls
+- pip install pep8 pyflakes
+- pep8 *.py
+- pyflakes *.py
 
 env:
   global:

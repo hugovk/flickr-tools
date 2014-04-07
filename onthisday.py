@@ -2,16 +2,21 @@
 """
 Tweet your old Flickr photos from this day in history.
 """
+from __future__ import print_function
 import argparse
 import datetime
-import flickrapi  # http://www.stuvel.eu/flickrapi `pip install flickrapi`
-import flickrapi.shorturl
 import os
 import sys
 import yaml
 import webbrowser
+
+# http://www.stuvel.eu/flickrapi
+import flickrapi  # `pip install flickrapi`
+import flickrapi.shorturl
 # https://github.com/sixohsix/twitter
 from twitter import *  # `pip install twitter`
+
+import flickr_utils
 
 
 def load_yaml(filename):
@@ -37,15 +42,15 @@ def tweet_it(string, credentials):
                            credentials['consumer_key'],
                            credentials['consumer_secret']))
 
-    print "TWEETING THIS:\n", string
+    print("TWEETING THIS:\n", string)
 
     if args.test:
-        print "(Test mode, not actually tweeting)"
+        print("(Test mode, not actually tweeting)")
     else:
         result = t.statuses.update(status=string)
         url = "http://twitter.com/" + \
             result['user']['screen_name'] + "/status/" + result['id_str']
-        print "Tweeted:\n" + url
+        print("Tweeted:\n" + url)
         if not args.no_web:
             webbrowser.open(url, new=2)  # 2 = open in a new tab, if possible
 
@@ -92,34 +97,16 @@ def six_months_from(now):
 def find_photos(flickr, my_nsid, tweet, now, earliest_year):
     found = 0
     for year in range(now.year-1, earliest_year-1, -1):
-        print "Checking", year
+        print("Checking", year)
 
-        # Find a photo from this year
-        taken_year = now.replace(year=year)
+        photo = flickr_utils.most_interesting_today_in(
+            flickr, my_nsid, year, now)
 
-        min_taken_date = datetime.datetime.combine(
-            taken_year, datetime.time.min)
-        max_taken_date = datetime.datetime.combine(
-            taken_year, datetime.time.max)
-
-        # Convert into MySQL datetime
-        min_taken_date = min_taken_date.isoformat(' ')
-        max_taken_date = max_taken_date.isoformat(' ')
-
-        photos = flickr.photos_search(
-            user_id=my_nsid,
-            sort="interestingness-desc",  # most interesting
-            privacy_filter="1",  # public
-            per_page="1",  # only want a single photo per year
-            min_taken_date=min_taken_date,
-            max_taken_date=max_taken_date)
-#         ET.dump(photos)
-
-        if len(photos[0]) > 0:
-            print "Found a photo for", year
+        if photo:
+            print("Found a photo for", year)
             found += 1
-#             ET.dump(photos[0][0])
-            photo_id = int(photos[0][0].attrib['id'])
+#             ET.dump(photo[0])
+            photo_id = int(photo[0].attrib['id'])
             url = flickrapi.shorturl.url(photo_id)
             tweetlet = " " + str(year) + ": "
 
@@ -135,11 +122,11 @@ def find_photos(flickr, my_nsid, tweet, now, earliest_year):
             if len(tweet) + len(tweetlet) + 22 > 140:
                 break
         else:
-            print "No photo for", year
+            print("No photo for", year)
 
-        print tweet
+        print(tweet)
 
-    print "Found", found, "photos"
+    print("Found", found, "photos")
     return found, tweet
 
 
@@ -195,11 +182,11 @@ if __name__ == "__main__":
     flickr.get_token_part_two((token, frob))
 
     if args.test:
-        print "(Test mode, not actually tweeting)"
+        print("(Test mode, not actually tweeting)")
 
     my_nsid = flickr.people_findByUsername(username=args.username)
     my_nsid = my_nsid.getchildren()[0].attrib['nsid']
-    print "My NSID:", my_nsid
+    print("My NSID:", my_nsid)
 
     if args.earliest_year:
         earliest_year = args.earliest_year
@@ -213,7 +200,7 @@ if __name__ == "__main__":
         # reached before the max tweet length is reached.
         earliest_year = int(firstdatetaken[:4])
 
-    print "Earliest year:", earliest_year
+    print("Earliest year:", earliest_year)
 
     now = datetime.datetime.now()
     found = 0
@@ -232,7 +219,7 @@ if __name__ == "__main__":
     if not found:
         sys.exit("No photos found, try again tomorrow")
 
-    print "Tweet this:\n", tweet
+    print("Tweet this:\n", tweet)
     tweet_it(tweet, twitter_credentials)
 
 # End of file
