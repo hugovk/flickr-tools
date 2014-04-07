@@ -18,10 +18,7 @@ install:
 - pip install coveralls
 
 script:
-- coverage erase
-- coverage run --append --source=flickr_set_downloadr.py ./test_flickr_set_downloadr.py
-- coverage run --append --source=onthisday.py onthisday.py --test --no-web
-- coverage run --append --source=onthisday.py onthisday.py --test --no-web --six-months
+- coverage run --source=flickr_set_downloadr.py ./test_flickr_set_downloadr.py
 
 after_success:
 - coverage report
