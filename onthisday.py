@@ -14,7 +14,8 @@ import webbrowser
 import flickrapi  # `pip install flickrapi`
 import flickrapi.shorturl
 # https://github.com/sixohsix/twitter
-from twitter import *  # `pip install twitter`
+# from twitter import *  # `pip install twitter`
+import twitter
 
 import flickr_utils
 
@@ -37,7 +38,7 @@ def tweet_it(string, credentials):
     # Create and authorise an app with (read and) write access at:
     # https://dev.twitter.com/apps/new
     # Store credentials in YAML file. See data/onthisday_example.yaml
-    t = Twitter(auth=OAuth(credentials['oauth_token'],
+    t = twitter.Twitter(auth=twitter.OAuth(credentials['oauth_token'],
                            credentials['oauth_token_secret'],
                            credentials['consumer_key'],
                            credentials['consumer_secret']))
@@ -102,11 +103,11 @@ def find_photos(flickr, my_nsid, tweet, now, earliest_year):
         photo = flickr_utils.most_interesting_today_in(
             flickr, my_nsid, year, now)
 
-        if photo:
+        if photo is not None:
             print("Found a photo for", year)
             found += 1
-#             ET.dump(photo[0])
-            photo_id = int(photo[0].attrib['id'])
+#             ET.dump(photo)
+            photo_id = int(photo.attrib['id'])
             url = flickrapi.shorturl.url(photo_id)
             tweetlet = " " + str(year) + ": "
 

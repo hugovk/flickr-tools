@@ -12,8 +12,11 @@ try:
 except ImportError:
     from urllib.request import urlopen
 
+import xml.etree.ElementTree as ET
 
-def most_interesting_today_in(flickr, nsid, year, now=None):
+
+
+def most_interesting_today_in(flickr, nsid, year, size, now=None):
     """Find the most interesting photo on this day in a given year"""
     if now is None:
         now = datetime.datetime.now()
@@ -30,29 +33,47 @@ def most_interesting_today_in(flickr, nsid, year, now=None):
     min_taken_date = min_taken_date.isoformat(' ')
     max_taken_date = max_taken_date.isoformat(' ')
 
+    url_size = "url_" + size
+    print(url_size)
     photos = flickr.photos_search(
         user_id=nsid,
         sort="interestingness-desc",  # most interesting
         privacy_filter="1",  # public
         per_page="1",  # only want a single photo per year
+        media="photos",  # no videos
         min_taken_date=min_taken_date,
-        max_taken_date=max_taken_date)
+        max_taken_date=max_taken_date,
+        extras=url_size)
 #         ET.dump(photos)
 
     if len(photos[0]) > 0:
-#             ET.dump(photos[0][0])
+#         ET.dump(photos[0][0])
 #         photo_id = int(photos[0][0].attrib['id'])
-        return photos[0]
+#         ET.dump(photos[0])
+
+        return photos[0][0]
     else:
         return None
 
 
-def download(url, title, noclobber=False, number=None):
+def photo_title(photo):
+    return photo.attrib['title']
+
+
+def photo_url(flickr, photo, size):
+#     ET.dump(photo)
+
+    url_size = "url_" + size
+    print(photo.attrib[url_size])
+    return(photo.attrib[url_size])
+
+
+def download(url, title, noclobber=False, number=None, dir=None):
     if title:
         file_name = title + ".jpg"
         # Make Windows-safe
         file_name = "".join(
-            c for c in file_name if c.isalnum() or c in [' ', '.']).rstrip()
+            c for c in file_name if c.isalnum() or c in [' ', '.', '-']).rstrip()
     else:
         file_name = url.split('/')[-1]
 
@@ -61,6 +82,9 @@ def download(url, title, noclobber=False, number=None):
 
     if len(file_name) > 200:
         file_name = file_name[:200]
+
+    if dir:
+        file_name = os.path.join(dir, file_name)
 
     if noclobber and os.path.exists(file_name):
         print("File already exists, skipping:", file_name)

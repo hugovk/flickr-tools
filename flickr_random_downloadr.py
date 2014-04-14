@@ -102,28 +102,13 @@ if __name__ == '__main__':
     # so instead could have a while until the required number have
     # been actually downloaded.
     for photo in random_photos:
-        secret = photo.attrib['secret']
-        photo_id = photo.attrib['id']
+        url = flickr_utils.photo_url(photo, args.size)
+
         if args.title:
             photo_title = photo.attrib['title']
         else:
             photo_title = None
 
-        if args.size == "o":
-            # Need an extra API call to get the originalsecret
-            photo_info = flickr.photos_getInfo(photo_id=photo_id)
-            photo_info = photo_info[0]
-            oSecret = photo_info.attrib['originalsecret']
-            flickr_utils.download(
-                "http://farm%s.static.flickr.com/%s/%s_%s_o.jpg" %
-                (photo.attrib['farm'], photo.attrib['server'],
-                    photo.attrib['id'], oSecret),
-                photo_title, args.noclobber)
-        else:
-            flickr_utils.download(
-                "http://farm%s.static.flickr.com/%s/%s_%s_%s.jpg" %
-                (photo.attrib['farm'], photo.attrib['server'],
-                    photo.attrib['id'], secret, args.size),
-                photo_title, args.noclobber)
+        flickr_utils.download(url, photo_title, args.noclobber)
 
 # End of file
