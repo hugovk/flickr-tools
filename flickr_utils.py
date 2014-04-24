@@ -16,7 +16,7 @@ import xml.etree.ElementTree as ET
 
 
 
-def most_interesting_today_in(flickr, nsid, year, size, now=None):
+def most_interesting_today_in(flickr, nsid, year, size="b", now=None):
     """Find the most interesting photo on this day in a given year"""
     if now is None:
         now = datetime.datetime.now()
@@ -34,7 +34,6 @@ def most_interesting_today_in(flickr, nsid, year, size, now=None):
     max_taken_date = max_taken_date.isoformat(' ')
 
     url_size = "url_" + size
-    print(url_size)
     photos = flickr.photos_search(
         user_id=nsid,
         sort="interestingness-desc",  # most interesting

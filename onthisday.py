@@ -101,7 +101,7 @@ def find_photos(flickr, my_nsid, tweet, now, earliest_year):
         print("Checking", year)
 
         photo = flickr_utils.most_interesting_today_in(
-            flickr, my_nsid, year, now)
+            flickr, my_nsid, year, now=now)
 
         if photo is not None:
             print("Found a photo for", year)
