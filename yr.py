@@ -57,9 +57,6 @@ def find_photo_for_date(date, flickr, nsid):
         if photo is not None:
             print("\tFound photo")
             url = flickr_utils.photo_url(flickr, photo, args.size)
-            print(url)
-            print(url)
-            print(url)
 
             attempts = 0
             while(attempts <= 5):
