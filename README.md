@@ -182,3 +182,28 @@ optional arguments:
   -i, --info            Show information about my groups and exit (default:
                         False)
 ```
+
+yr.py
+--------
+
+Make a collage of a year's most interesting photos. Requires PIL (or rather Pillow) and flickrapi. Also uses normalise.py and contact_sheet.py from https://github.com/hugovk/pixel-tools.
+
+
+```
+usage: yr.py [-h] [-u USERNAME] [-s {s,q,t,m,n,z,c,b,o}] [-y YEAR]
+
+Make a collage of a year's most interesting photos
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -u USERNAME, --username USERNAME
+                        Your Flickr username (default: hugovk)
+  -s {s,q,t,m,n,z,c,b,o}, --size {s,q,t,m,n,z,c,b,o}
+                        The size of photo you want to download: s - 75x75, q -
+                        150x150, t - 100 on the longest side, m - 240 on the
+                        longest side, n - 320 on the longest side, z - 640 on
+                        the longest side, c - 800 on the longest side, b -
+                        1024 on the longest side (default), o - original
+                        (default: b)
+  -y YEAR, --year YEAR  Year to download (default: 2013)
+  ```
