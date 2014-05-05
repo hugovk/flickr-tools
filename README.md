@@ -188,6 +188,8 @@ yr.py
 
 Make a collage of a year's most interesting photos. Requires PIL (or rather Pillow) and flickrapi. Also uses normalise.py and contact_sheet.py from https://github.com/hugovk/pixel-tools.
 
+[Some examples on Flickr.](https://www.flickr.com/search/?text=flickr%3Atool%3Dyr&sort=date-posted-desc)
+
 
 ```
 usage: yr.py [-h] [-u USERNAME] [-s {s,q,t,m,n,z,c,b,o}] [-y YEAR]
