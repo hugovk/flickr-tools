@@ -29,6 +29,9 @@ def most_interesting_today_in(flickr, nsid, year, size="b", now=None):
     max_taken_date = datetime.datetime.combine(
         taken_year, datetime.time.max)
 
+    # Flickr returns nothing if microseconds set: 23:59:59.99999
+    max_taken_date = max_taken_date.replace(microsecond=0)
+
     # Convert into MySQL datetime
     min_taken_date = min_taken_date.isoformat(' ')
     max_taken_date = max_taken_date.isoformat(' ')

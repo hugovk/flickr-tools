@@ -52,6 +52,13 @@ def find_photo_for_date(date, flickr, nsid):
     if os.path.exists(filename):
         print("\tFound file")
     else:
+        today = datetime.datetime.now()
+        today = datetime.date(today.year, today.month, today.day)
+        if date > today:
+            print("\tIn the future")
+            black_pixel(filename)
+            return
+
         photo = flickr_utils.most_interesting_today_in(
             flickr, nsid, date.year, args.size, date)
         if photo is not None:
