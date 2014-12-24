@@ -91,10 +91,7 @@ if __name__ == "__main__":
     api_key = unicode(os.environ['FLICKR_API_KEY'])
     api_secret = unicode(os.environ['FLICKR_SECRET'])
     flickr = flickrapi.FlickrAPI(api_key, api_secret)
-    (token, frob) = flickr.get_token_part_one(perms='write')
-    if not token:
-        raw_input("Press ENTER after you authorised this program")
-    flickr.get_token_part_two((token, frob))
+    flickr.authenticate_via_browser(perms='write')
 
     added = 0
     faves_set_id = None

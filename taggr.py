@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # coding=utf-8
+from __future__ import print_function
 import argparse
 import flickrapi  # http://www.stuvel.eu/flickrapi
 import os
@@ -71,9 +72,9 @@ EXPANDABLES = [
 # cmd.exe cannot do Unicode so encode first
 def print_it(text):
     if isinstance(text, unicode):
-        print text.encode('utf-8')
+        print(text.encode('utf-8'))
     else:
-        print text
+        print(text)
 
 
 def get_photo_tags(photo_info):
@@ -113,7 +114,7 @@ def set_flickr_tags(photo_id, new_tags, old_tags):
                     photo_id=photo_id,
                     tags=tag_string)
             except flickrapi.FlickrError:
-                print "Flickr error:", sys.exc_info()[0]
+                print("Flickr error:", sys.exc_info()[0])
                 # Move on to the next photo
             except:
                 pass
@@ -148,7 +149,7 @@ def set_machine_tags(photo_id):
             namespace = "exif"
             predicate = predicate.replace(" ", "_")
             value = exif_tag[0].text
-            # print exif_tag.attrib['label'], exif_tag.attrib['tag']
+            # print(exif_tag.attrib['label'], exif_tag.attrib['tag'])
 
             if predicate == "Make" or predicate == "Model":
                 namespace = "camera"
@@ -158,15 +159,15 @@ def set_machine_tags(photo_id):
                     model = value
 
             machine_tag = '"' + namespace + ':' + predicate + '=' + value + '"'
-            print "Got tag:", machine_tag
+            print("Got tag:", machine_tag)
             machine_tags.append(machine_tag)
 
     epoch_seconds = str(int(time.time()))
     if machine_tags:
-        print "  Got", len(machine_tags), "exif tags for", photo_id
+        print("  Got", len(machine_tags), "exif tags for", photo_id)
         machine_tags.append("meta:exif=" + epoch_seconds)
     else:
-        print "  Got no exif tags for", photo_id
+        print("  Got no exif tags for", photo_id)
         machine_tags.append("meta:exif=none")
 
     set_flickr_tags(photo_id, machine_tags, flickr_tags)
@@ -295,10 +296,10 @@ def set_geo_tags(photo_id, info, flickr_tags):
     try:
         location = flickr.photos_geo_getLocation(photo_id=photo_id)
     except flickrapi.FlickrError:
-        print "Flickr error:", sys.exc_info()[0]
+        print("Flickr error:", sys.exc_info()[0])
         return
     except:
-        print "Error:", sys.exc_info()[0]
+        print("Error:", sys.exc_info()[0])
         return
 
     if location is None:
@@ -378,14 +379,11 @@ if __name__ == "__main__":
     if not args.api_secret:
         args.api_secret = os.environ['FLICKR_SECRET']
     flickr = flickrapi.FlickrAPI(args.api_key, args.api_secret)
-    (token, frob) = flickr.get_token_part_one(perms='write')
-    if not token:
-        raw_input("Press ENTER after you authorised this program")
-    flickr.get_token_part_two((token, frob))
+    flickr.authenticate_via_browser(perms='write')
 
     # Get all my photos
     photos = []
-    print "Getting photos"
+    print("Getting photos")
     count, processed = 0, 0
     for photo in flickr.walk(
             tag_mode='all',
@@ -399,21 +397,21 @@ if __name__ == "__main__":
         if args.number and processed > args.number:
             sys.exit(str(args.number) + " photos processed, exiting")
 
-        print "\nProcessing photo", count, ":", photo_id
+        print("\nProcessing photo", count, ":", photo_id)
 
         try:
             info = flickr.photos_getInfo(photo_id=photo_id)
         except KeyboardInterrupt:
-            print "Keyboard interrupt"
+            print("Keyboard interrupt")
         except:
-            print "  Error getting photo info:", sys.exc_info()
-            print "  Skipping"
+            print("  Error getting photo info:", sys.exc_info())
+            print("  Skipping")
             continue
 
         # Skip those that aren't mine
         owner = info.getchildren()[0].find('owner').attrib['username']
         if owner != "hugovk":
-            print "  Not mine, skipping"
+            print("  Not mine, skipping")
             continue
 
         flickr_tags = get_photo_tags(info)
@@ -422,7 +420,7 @@ if __name__ == "__main__":
             if photo_has_partial_tag("meta:exif=", flickr_tags):
                 if not args.jatkuu:
                     sys.exit("  Previously processed, exiting")
-                print "  Previously processed, skipping"
+                print("  Previously processed, skipping")
                 continue
 
         set_title_desc_tags(photo_id, info, flickr_tags)

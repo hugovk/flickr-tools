@@ -177,10 +177,7 @@ if __name__ == "__main__":
     if not args.api_secret:
         args.api_secret = os.environ['FLICKR_SECRET']
     flickr = flickrapi.FlickrAPI(args.api_key, args.api_secret)
-    (token, frob) = flickr.get_token_part_one(perms='write')
-    if not token:
-        raw_input("Press ENTER after you authorised this program")
-    flickr.get_token_part_two((token, frob))
+    flickr.authenticate_via_browser(perms='write')
 
     if args.test:
         print("(Test mode, not actually tweeting)")
