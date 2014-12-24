@@ -56,10 +56,7 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     flickr = flickrapi.FlickrAPI(api_key, api_secret)
-    (token, frob) = flickr.get_token_part_one(perms='read')
-    if not token:
-        raw_input("Press ENTER after you authorized this program")
-    flickr.get_token_part_two((token, frob))
+    flickr.authenticate_via_browser(perms='read')
 
     i = 0
     number = None

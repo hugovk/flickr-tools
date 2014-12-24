@@ -1,6 +1,10 @@
 Flickr tools
 ============
 
+[![Build Status](https://travis-ci.org/hugovk/flickr-tools.svg?branch=master)](https://travis-ci.org/hugovk/flickr-tools)
+[![Coverage Status](https://coveralls.io/repos/hugovk/flickr-tools/badge.png?branch=master)](https://coveralls.io/r/hugovk/flickr-tools?branch=master)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/hugovk/flickr-tools/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/hugovk/flickr-tools/?branch=master)
+
 Command-line Python scripts to do stuff with Flickr.
 
 Installation

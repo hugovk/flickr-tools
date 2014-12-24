@@ -56,10 +56,7 @@ if __name__ == '__main__':
         None
 
     flickr = flickrapi.FlickrAPI(api_key, api_secret)
-    (token, frob) = flickr.get_token_part_one(perms='read')
-    if not token:
-        raw_input("Press ENTER after you authorized this program")
-    flickr.get_token_part_two((token, frob))
+    flickr.authenticate_via_browser(perms='read')
 
     # Get ugly ID from nice ID
     user_nsid = flickr.people_findByUsername(username=args.username)
