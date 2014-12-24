@@ -13,7 +13,7 @@ except ImportError:
     from urllib.request import urlopen
 
 import xml.etree.ElementTree as ET
-
+assert ET  # silence warnings
 
 
 def most_interesting_today_in(flickr, nsid, year, size="b", now=None):
@@ -46,12 +46,11 @@ def most_interesting_today_in(flickr, nsid, year, size="b", now=None):
         min_taken_date=min_taken_date,
         max_taken_date=max_taken_date,
         extras=url_size)
-#         ET.dump(photos)
 
     if len(photos[0]) > 0:
-#         ET.dump(photos[0][0])
-#         photo_id = int(photos[0][0].attrib['id'])
-#         ET.dump(photos[0])
+        # ET.dump(photos[0][0])
+        # photo_id = int(photos[0][0].attrib['id'])
+        # ET.dump(photos[0])
 
         return photos[0][0]
     else:
@@ -63,7 +62,7 @@ def photo_title(photo):
 
 
 def photo_url(flickr, photo, size):
-#     ET.dump(photo)
+    # ET.dump(photo)
 
     url_size = "url_" + size
     print(photo.attrib[url_size])
@@ -75,7 +74,8 @@ def download(url, title, noclobber=False, number=None, dir=None):
         file_name = title + ".jpg"
         # Make Windows-safe
         file_name = "".join(
-            c for c in file_name if c.isalnum() or c in [' ', '.', '-']).rstrip()
+            c for c in file_name if c.isalnum() or c in [
+                ' ', '.', '-']).rstrip()
     else:
         file_name = url.split('/')[-1]
 

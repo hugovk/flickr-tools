@@ -371,6 +371,7 @@ if __name__ == "__main__":
 
     try:
         import timing  # optional
+        assert timing  # silence warnings
     except:
         pass
 

@@ -39,9 +39,9 @@ def tweet_it(string, credentials):
     # https://dev.twitter.com/apps/new
     # Store credentials in YAML file. See data/onthisday_example.yaml
     t = twitter.Twitter(auth=twitter.OAuth(credentials['oauth_token'],
-                           credentials['oauth_token_secret'],
-                           credentials['consumer_key'],
-                           credentials['consumer_secret']))
+                        credentials['oauth_token_secret'],
+                        credentials['consumer_key'],
+                        credentials['consumer_secret']))
 
     print("TWEETING THIS:\n", string)
 
@@ -167,6 +167,7 @@ if __name__ == "__main__":
 
     try:
         import timing  # optional
+        assert timing  # silence warnings
     except:
         pass
 

@@ -52,6 +52,7 @@ if __name__ == '__main__':
     # Optional, http://stackoverflow.com/a/1557906/724176
     try:
         import timing
+        assert timing  # silence warnings
     except:
         None
 
@@ -82,7 +83,7 @@ if __name__ == '__main__':
         # If you ask for a page higher than 10,000,
         # the API just returns page 10,000
         if random_integer <= 10000:
-#             Use pages of 1
+            # Use pages of 1
             photo_page = flickr.people_getPublicPhotos(
                 user_id=user_nsid, per_page=1, page=random_integer)
             photo = photo_page.getchildren()[0].find('photo')

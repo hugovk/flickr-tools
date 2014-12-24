@@ -11,6 +11,7 @@ import time
 
 try:
     import timing  # optional
+    assert timing  # silence warnings
 except:
     pass
 

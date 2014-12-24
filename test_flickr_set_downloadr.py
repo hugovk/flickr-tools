@@ -8,9 +8,6 @@ import flickr_set_downloadr
 
 class TestSequenceFunctions(unittest.TestCase):
 
-#     def setUp(self):
-#         self.seq = range(10)
-
     def test_validate_setid__only_numbers(self):
         """ Test numbers return as numbers """
         input = "72157639351309353"
