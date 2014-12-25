@@ -21,9 +21,9 @@ api_key = os.environ['FLICKR_API_KEY']
 api_secret = os.environ['FLICKR_SECRET']
 
 
-def create_dir(dir):
-    if not os.path.isdir(dir):
-        os.mkdir(dir)
+def create_dir(directory):
+    if not os.path.isdir(directory):
+        os.mkdir(directory)
 
 
 def contact_sheet():
@@ -31,12 +31,14 @@ def contact_sheet():
     year = str(args.year)
     tempdir = os.path.join(year, 'temp_normalised')
     os.system('mkdir ' + tempdir)
-    os.system(
-        'normalise.py -n 1024,575 -i "' + os.path.join(year, '*.jpg') +
-        '" -o ' + tempdir)
-    os.system(
-        'contact_sheet.py -m 50 -p 10 -i "' + os.path.join(tempdir, '*.jpg') +
-        '" -o ' + year + '.jpg')
+    cmd = ('normalise.py -n 1024,575 -i "' + os.path.join(year, '*.jpg') +
+           '" -o ' + tempdir)
+    print(cmd)
+    os.system(cmd)
+    cmd = ('contact_sheet.py -m 50 -p 10 -i "' +
+           os.path.join(tempdir, '*.jpg') + '" -o ' + year + '.jpg')
+    print(cmd)
+    os.system(cmd)
 
 
 def black_pixel(filename):
@@ -67,9 +69,11 @@ def find_photo_for_date(date, flickr, nsid):
             attempts = 0
             while(attempts <= 5):
                 try:
-                    flickr_utils.download(url, title, True, dir=str(args.year))
+                    flickr_utils.download(url, title, True,
+                                          directory=str(args.year))
                     break
-                except:
+                except Exception as e:
+                    print("Error: %s" % repr(e))
                     print("Try again")
                     attempts += 1
 
@@ -133,8 +137,8 @@ if __name__ == '__main__':
         '-u', '--username', default="hugovk",
         help="Your Flickr username")
     parser.add_argument(
-        "-s", "--size", default="b",
-        choices=("s", "q", "t", "m", "n", "z", "c", "b", "o"),
+        "-s", "--size", default="l",
+        choices=("s", "q", "t", "m", "n", "z", "c", "l", "o"),
         help="The size of photo you want to download: "
         "s - 75x75, "
         "q - 150x150, "
@@ -143,7 +147,7 @@ if __name__ == '__main__':
         "n - 320 on the longest side, "
         "z - 640 on the longest side, "
         "c - 800 on the longest side, "
-        "b - 1024 on the longest side (default), "
+        "l - 1024 on the longest side (default), "
         "o - original")
     parser.add_argument(
         "-y", "--year", default=2013, type=int,

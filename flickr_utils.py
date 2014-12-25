@@ -16,7 +16,7 @@ import xml.etree.ElementTree as ET
 assert ET  # silence warnings
 
 
-def most_interesting_today_in(flickr, nsid, year, size="b", now=None):
+def most_interesting_today_in(flickr, nsid, year, size="l", now=None):
     """Find the most interesting photo on this day in a given year"""
     if now is None:
         now = datetime.datetime.now()
@@ -37,6 +37,7 @@ def most_interesting_today_in(flickr, nsid, year, size="b", now=None):
     max_taken_date = max_taken_date.isoformat(' ')
 
     url_size = "url_" + size
+    extras=url_size + ",url_o"  # Include original as a fall-back
     photos = flickr.photos_search(
         user_id=nsid,
         sort="interestingness-desc",  # most interesting
@@ -45,7 +46,7 @@ def most_interesting_today_in(flickr, nsid, year, size="b", now=None):
         media="photos",  # no videos
         min_taken_date=min_taken_date,
         max_taken_date=max_taken_date,
-        extras=url_size)
+        extras=extras)
 
     if len(photos[0]) > 0:
         # ET.dump(photos[0][0])
@@ -62,14 +63,17 @@ def photo_title(photo):
 
 
 def photo_url(flickr, photo, size):
-    # ET.dump(photo)
+    ET.dump(photo)
 
     url_size = "url_" + size
+    if url_size not in photo.attrib:
+        # Fallback to original
+        url_size = "url_o"
     print(photo.attrib[url_size])
     return(photo.attrib[url_size])
 
 
-def download(url, title, noclobber=False, number=None, dir=None):
+def download(url, title, noclobber=False, number=None, directory=None):
     if title:
         file_name = title + ".jpg"
         # Make Windows-safe
@@ -85,8 +89,8 @@ def download(url, title, noclobber=False, number=None, dir=None):
     if len(file_name) > 200:
         file_name = file_name[:200]
 
-    if dir:
-        file_name = os.path.join(dir, file_name)
+    if directory:
+        file_name = os.path.join(directory, file_name)
 
     if noclobber and os.path.exists(file_name):
         print("File already exists, skipping:", file_name)
@@ -101,12 +105,12 @@ def download(url, title, noclobber=False, number=None, dir=None):
     file_size_dl = 0
     block_sz = 8192
     while True:
-        buffer = u.read(block_sz)
-        if not buffer:
+        data_buffer = u.read(block_sz)
+        if not data_buffer:
             break
 
-        file_size_dl += len(buffer)
-        f.write(buffer)
+        file_size_dl += len(data_buffer)
+        f.write(data_buffer)
         status = r"%10d  [%3.2f%%]" % (
             file_size_dl, file_size_dl * 100. / file_size)
         status = status + chr(8)*(len(status)+1)

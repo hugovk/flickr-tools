@@ -54,7 +54,7 @@ if __name__ == '__main__':
         import timing
         assert timing  # silence warnings
     except ImportError:
-        None
+        pass
 
     flickr = flickrapi.FlickrAPI(api_key, api_secret)
     flickr.authenticate_via_browser(perms='read')

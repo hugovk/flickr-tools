@@ -292,7 +292,7 @@ def find_location(text, location):
         return None
 
 
-def set_geo_tags(photo_id, info, flickr_tags):
+def set_geo_tags(photo_id, flickr_tags):
     try:
         location = flickr.photos_geo_getLocation(photo_id=photo_id)
     except flickrapi.FlickrError:
@@ -425,7 +425,7 @@ if __name__ == "__main__":
                 continue
 
         set_title_desc_tags(photo_id, info, flickr_tags)
-        set_geo_tags(photo_id, info, flickr_tags)
+        set_geo_tags(photo_id, flickr_tags)
         make, model, timestring = set_machine_tags(photo_id)
         set_standard_tags(photo_id, make, model, timestring, flickr_tags)
 
