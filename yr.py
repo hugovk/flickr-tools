@@ -22,7 +22,6 @@ api_secret = os.environ['FLICKR_SECRET']
 
 
 def create_dir(dir):
-    import os
     if not os.path.isdir(dir):
         os.mkdir(dir)
 
@@ -155,7 +154,7 @@ if __name__ == '__main__':
     try:
         import timing
         assert timing  # silence warnings
-    except:
+    except ImportError:
         pass
 
     flickr = flickrapi.FlickrAPI(api_key, api_secret)

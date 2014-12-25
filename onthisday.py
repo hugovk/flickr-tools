@@ -168,7 +168,7 @@ if __name__ == "__main__":
     try:
         import timing  # optional
         assert timing  # silence warnings
-    except:
+    except ImportError:
         pass
 
     twitter_credentials = load_yaml(args.yaml)

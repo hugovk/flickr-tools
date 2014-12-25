@@ -15,7 +15,7 @@ import flickr_utils
 try:
     import timing
     assert timing  # silence warnings
-except:
+except ImportError:
     pass
 
 api_key = os.environ['FLICKR_API_KEY']

@@ -66,7 +66,7 @@ if __name__ == '__main__':
     try:
         import timing
         assert timing  # silence warnings
-    except:
+    except ImportError:
         pass
 
     if args.setid is None:

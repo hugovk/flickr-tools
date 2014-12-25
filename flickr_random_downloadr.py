@@ -53,7 +53,7 @@ if __name__ == '__main__':
     try:
         import timing
         assert timing  # silence warnings
-    except:
+    except ImportError:
         None
 
     flickr = flickrapi.FlickrAPI(api_key, api_secret)

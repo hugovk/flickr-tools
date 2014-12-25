@@ -12,7 +12,7 @@ import time
 try:
     import timing  # optional
     assert timing  # silence warnings
-except:
+except ImportError:
     pass
 
 
@@ -27,12 +27,12 @@ def get_faves_set_id():
         title = photoset.getchildren()[0].text
         if title == args.title:
             print "  Favourites set already exists"
-            id = photoset.attrib['id']
-            # print "ID:         ", id
+            set_id = photoset.attrib['id']
+            # print "ID:         ", set_id
             # print "Title:      ", title
             # description = photoset.getchildren()[1].text
             # if description: print "Description:", description
-            return id
+            return set_id
     print "  Favourites set not found, needs creating"
     return None
 
