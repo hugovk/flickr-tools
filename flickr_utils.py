@@ -37,7 +37,7 @@ def most_interesting_today_in(flickr, nsid, year, size="l", now=None):
     max_taken_date = max_taken_date.isoformat(' ')
 
     url_size = "url_" + size
-    extras=url_size + ",url_o"  # Include original as a fall-back
+    extras = url_size + ",url_o"  # Include original as a fall-back
     photos = flickr.photos_search(
         user_id=nsid,
         sort="interestingness-desc",  # most interesting

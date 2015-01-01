@@ -63,8 +63,8 @@ if __name__ == '__main__':
     number = None
     for photo in flickr.walk(
             tag_mode='all',
-        #   privacy_filter='1', # public
-        #   max_taken_date='2009-02-07',
+            # privacy_filter='1', # public
+            # max_taken_date='2009-02-07',
             text=args.text,
             tags=args.tags):
 
