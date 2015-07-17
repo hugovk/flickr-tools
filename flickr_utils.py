@@ -94,7 +94,7 @@ def download(url, title, noclobber=False, number=None, directory=None):
 
     if noclobber and os.path.exists(file_name):
         print("File already exists, skipping:", file_name)
-        return
+        return file_name
 
     u = urlopen(url)
     f = open(file_name, 'wb')
@@ -117,6 +117,6 @@ def download(url, title, noclobber=False, number=None, directory=None):
         print(status, end=" ")
 
     f.close()
-    return
+    return file_name
 
 # End of file
