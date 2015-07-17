@@ -64,8 +64,10 @@ EXPANDABLES = [
             'airport', 'lentoasema', 'Helsinki-Vantaa airport']],
     ['wintercycling',
         ['bicycle', 'cycle', 'polkupyörä', 'fillari', 'cycling', 'bike']],
+    ['bikehack',
+        ['bicycle', 'cycle', 'polkupyörä', 'fillari', 'cycling', 'hack']],
     ['bike',
-        ['bicycle', 'cycle', 'polkupyörä', 'fillari', 'cycling']]
+        ['bicycle', 'cycle', 'polkupyörä', 'fillari', 'cycling']],
     ]
 
 
@@ -380,7 +382,14 @@ if __name__ == "__main__":
     if not args.api_secret:
         args.api_secret = os.environ['FLICKR_SECRET']
     flickr = flickrapi.FlickrAPI(args.api_key, args.api_secret)
-    flickr.authenticate_via_browser(perms='write')
+
+    try:
+        flickr.authenticate_via_browser(perms='write')
+    except flickrapi.exceptions.FlickrError:
+        (token, frob) = flickr.get_token_part_one(perms='write')
+        if not token:
+            raw_input("Press ENTER after you authorised this program")
+        flickr.get_token_part_two((token, frob))
 
     # Get all my photos
     photos = []
