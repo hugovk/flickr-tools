@@ -76,7 +76,14 @@ if __name__ == '__main__':
         args.setid = validate_setid(args.setid)
 
     flickr = flickrapi.FlickrAPI(api_key, api_secret)
-    flickr.authenticate_via_browser(perms='read')
+
+    try:
+        flickr.authenticate_via_browser(perms='read')
+    except flickrapi.exceptions.FlickrError:
+        (token, frob) = flickr.get_token_part_one(perms='read')
+        if not token:
+            raw_input("Press ENTER after you authorised this program")
+        flickr.get_token_part_two((token, frob))
 
     page = 0
     pages = 1  # may be higher, we'll update it later
