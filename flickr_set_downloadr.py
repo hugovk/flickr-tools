@@ -25,7 +25,10 @@ def validate_setid(setid):
     if "flickr.com" in setid:
         print("URL:", setid)
         setid = setid.rstrip("/")
-        sets_text = "/sets/"
+        if "/sets/" in setid:
+            sets_text = "/sets/"
+        else:
+            sets_text = "/albums/"
         sets_pos = setid.find(sets_text)
         setid = setid[sets_pos+len(sets_text):]
         print("Set ID:", setid)

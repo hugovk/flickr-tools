@@ -27,7 +27,7 @@ class TestSequenceFunctions(unittest.TestCase):
         output = flickr_set_downloadr.validate_setid(input)
         self.assertTrue(output.isdigit())
 
-    def test_validate_setid__flickr_url_returns_setit(self):
+    def test_validate_setid__flickr_url_returns_setid(self):
         """ Test numbers don't change """
         input = \
             "https://secure.flickr.com/photos/hugovk/sets/72157639350946574"
@@ -45,6 +45,34 @@ class TestSequenceFunctions(unittest.TestCase):
         """ Test numbers don't change """
         input = \
             "https://secure.flickr.com/photos/hugovk/sets/72157639350946574/"
+        output = flickr_set_downloadr.validate_setid(input)
+        self.assertEqual("72157639350946574", output)
+
+    def test_validate_setid__flickr_url_returns_numbers_for_album(self):
+        """ Test numbers don't change """
+        input = \
+            "https://secure.flickr.com/photos/hugovk/albums/72157639350946574"
+        output = flickr_set_downloadr.validate_setid(input)
+        self.assertTrue(output.isdigit())
+
+    def test_validate_setid__flickr_url_returns_setid_for_album(self):
+        """ Test numbers don't change """
+        input = \
+            "https://secure.flickr.com/photos/hugovk/albums/72157639350946574"
+        output = flickr_set_downloadr.validate_setid(input)
+        self.assertEqual("72157639350946574", output)
+
+    def test_validate_setid__flickr_url_with_slash_returns_numbers_album(self):
+        """ Test numbers don't change """
+        input = \
+            "https://secure.flickr.com/photos/hugovk/albums/72157639350946574/"
+        output = flickr_set_downloadr.validate_setid(input)
+        self.assertTrue(output.isdigit())
+
+    def test_validate_setid__flickr_url_with_slash_returns_setid_album(self):
+        """ Test numbers don't change """
+        input = \
+            "https://secure.flickr.com/photos/hugovk/albums/72157639350946574/"
         output = flickr_set_downloadr.validate_setid(input)
         self.assertEqual("72157639350946574", output)
 
