@@ -2,6 +2,7 @@
 Create a set containing your photos that others marked favourite.
 Needs a Flickr Pro account.
 """
+from __future__ import print_function
 import argparse
 import flickrapi  # http://www.stuvel.eu/flickrapi
 import os
@@ -17,7 +18,7 @@ except ImportError:
 
 
 def print_it(text):
-    print text.encode('utf-8')
+    print(text.encode('utf-8'))
 
 
 def get_faves_set_id():
@@ -26,14 +27,14 @@ def get_faves_set_id():
     for photoset in photosets:
         title = photoset.getchildren()[0].text
         if title == args.title:
-            print "  Favourites set already exists"
+            print("  Favourites set already exists")
             set_id = photoset.attrib['id']
-            # print "ID:         ", set_id
-            # print "Title:      ", title
+            # print("ID:         ", set_id)
+            # print("Title:      ", title)
             # description = photoset.getchildren()[1].text
-            # if description: print "Description:", description
+            # if description: print("Description:", description)
             return set_id
-    print "  Favourites set not found, needs creating"
+    print("  Favourites set not found, needs creating")
     return None
 
 
@@ -50,7 +51,7 @@ def create_faves_set(photo_id, faves_set_id):
             title=args.title, description=generate_description(),
             primary_photo_id=photo_id)
     except flickrapi.FlickrError:
-        print "  Flickr", str(sys.exc_info()[1])
+        print("  Flickr", str(sys.exc_info()[1]))
 
 
 def add_to_faves_set(photo_id, faves_set_id):
@@ -65,13 +66,13 @@ def add_to_faves_set(photo_id, faves_set_id):
                     description=generate_description())
             except flickrapi.FlickrError:
                 error = str(sys.exc_info()[1])
-                print "  Flickr", error
+                print("  Flickr", error)
 
     try:
         flickr.photosets_addPhoto(photoset_id=faves_set_id, photo_id=photo_id)
     except flickrapi.FlickrError:
         error = str(sys.exc_info()[1])
-        print "  Flickr", error
+        print("  Flickr", error)
 
     return faves_set_id
 
@@ -100,7 +101,7 @@ if __name__ == "__main__":
     faves = flickr.stats_getPopularPhotos(
         sort='favorites', per_page=args.limit
         ).getchildren()[0]
-    print "Photo ID\tFaves\tTitle"
+    print("Photo ID\tFaves\tTitle")
     for fave in faves:
         photo_id = fave.get('id')
         print_it(
@@ -109,7 +110,7 @@ if __name__ == "__main__":
         faves_set_id = add_to_faves_set(photo_id, faves_set_id)
         added += 1
 
-    print added, "additions to the set"
-    print "Done."
+    print(added, "additions to the set")
+    print("Done.")
 
 # End of file

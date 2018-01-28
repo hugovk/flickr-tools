@@ -4,6 +4,7 @@ Download random photos from your account
 Based on flickr_set_downloadr.py
 Based on http://pastebin.com/JEJiCNRd
 """
+from __future__ import print_function
 import argparse
 import os
 import random
@@ -62,23 +63,23 @@ if __name__ == '__main__':
     # Get ugly ID from nice ID
     user_nsid = flickr.people_findByUsername(username=args.username)
     user_nsid = user_nsid.getchildren()[0].attrib['nsid']
-    print "Username:", args.username
-    print "User NSID:", user_nsid
+    print("Username:", args.username)
+    print("User NSID:", user_nsid)
 
     # Find how many photos they have
     person_info = flickr.people_getInfo(user_id=user_nsid)
     number_of_photos = person_info.getchildren()[0].find(
         'photos').find('count').text
-    print "User has", number_of_photos, "photos"
+    print("User has", number_of_photos, "photos")
     if int(number_of_photos) == 0:
         sys.exit()
 
     random_photos = []
     for i in range(args.number):
         # Endpoints included:
-        print i, number_of_photos
+        print(i, number_of_photos)
         random_integer = random.randint(1, int(number_of_photos))
-        print "Random tractor:", random_integer
+        print("Random tractor:", random_integer)
 
         # If you ask for a page higher than 10,000,
         # the API just returns page 10,000

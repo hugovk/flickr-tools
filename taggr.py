@@ -339,6 +339,7 @@ def set_geo_tags(photo_id, flickr_tags):
     if new_tags:
         set_flickr_tags(photo_id, new_tags, flickr_tags)
 
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
         description="Machine tag photos from EXIF.")

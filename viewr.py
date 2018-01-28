@@ -2,6 +2,7 @@
 """
 Add photos to Flickr groups based on number of views.
 """
+from __future__ import print_function
 import argparse
 import datetime
 import flickrapi  # http://www.stuvel.eu/flickrapi
@@ -42,6 +43,7 @@ def query_yes_no(question, default="yes"):
             sys.stdout.write(
                 "Please respond with 'yes' or 'no' (or 'y' or 'n').\n")
 
+
 VIEW_GROUPS = [
     # group_id          min_views
     ["665334@N25",      25000],
@@ -71,7 +73,7 @@ VIEW_GROUPS = [
 
 # cmd.exe cannot do Unicode so encode first
 def print_it(text):
-    print text.encode('utf-8')
+    print(text.encode('utf-8'))
 
 
 def process_photo(photo_id):
@@ -92,10 +94,10 @@ def process_photo(photo_id):
                 name = group_info.getchildren()[0].find('name').text
                 rules = group_info.getchildren()[0].find('rules').text
                 if rules:
-                    print "----------------------------"
-                    print "Rules for group " + name + ":"
-                    print rules
-                    print "----------------------------"
+                    print("----------------------------")
+                    print("Rules for group " + name + ":")
+                    print(rules)
+                    print("----------------------------")
                     agree = query_yes_no("Agree to rules and join group?")
                     flickr.groups_join(group_id=nsid, accept_rules=agree)
                 else:
@@ -105,36 +107,37 @@ def process_photo(photo_id):
             if not args.test:
                 try:
                     flickr.groups_pools_add(photo_id=photo_id, group_id=nsid)
-                    print "    Photo added"
+                    print("    Photo added")
                     added += 1
                     photo_added = True
 
                 except flickrapi.FlickrError:
                     error = str(sys.exc_info()[1])
-                    print "    Flickr", error
+                    print("    Flickr", error)
                     if error == "Error: 3: Photo already in pool":
-                        print "      Skip photo"
+                        print("      Skip photo")
                         photo_added = True  # Don't add to any other pools
                         break  # Don't bother checking this photo any more
                     if error == "Error: 4: Photo in maximum number of pools":
-                        print "      Skip photo"
+                        print("      Skip photo")
                         break  # Don't bother checking this photo any more
                     elif error == "Error: 5: Photo limit reached":
                         # Don't bother checking this group again
-                        print "      Skip group until next time"
+                        print("      Skip group until next time")
                         del VIEW_GROUPS[i]
 
                 except:
                     error = str(sys.exc_info()[1])
-                    print "    Error", error
+                    print("    Error", error)
 
         elif photo_added and views > min_views:
-            print "Remove from group", nsid, ":", min_views
+            print("Remove from group", nsid, ":", min_views)
             try:
                 flickr.groups_pools_remove(photo_id=photo_id, group_id=nsid)
             except:
                 pass
     return added
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
@@ -175,7 +178,7 @@ if __name__ == "__main__":
     if args.random:
         from random import choice
         args.sort = choice(sort_options)
-        print "Random sort order:", args.sort
+        print("Random sort order:", args.sort)
 
     api_key = unicode(os.environ['FLICKR_API_KEY'])
     api_secret = unicode(os.environ['FLICKR_SECRET'])
@@ -191,7 +194,7 @@ if __name__ == "__main__":
 
     my_nsid = flickr.people_findByUsername(username="hugovk")
     my_nsid = my_nsid.getchildren()[0].attrib['nsid']
-    print "My NSID:", my_nsid
+    print("My NSID:", my_nsid)
     group_resp = flickr.people_getGroups(user_id=my_nsid)
     groups_resp = group_resp.getchildren()[0].getchildren()
     groups = {}
@@ -220,9 +223,9 @@ if __name__ == "__main__":
             # Check if UTC day changed.
             # If so, restore mappings for renewed daily limits.
             today = datetime.datetime.utcnow().day
-            print lastday, today, len(VIEW_GROUPS_BACKUP), len(VIEW_GROUPS)
+            print(lastday, today, len(VIEW_GROUPS_BACKUP), len(VIEW_GROUPS))
             if lastday != today:
-                print "Reset groups list"
+                print("Reset groups list")
                 lastday = today
                 VIEW_GROUPS = list(VIEW_GROUPS_BACKUP)
 
@@ -256,12 +259,12 @@ if __name__ == "__main__":
                 continue
 
             views = int(photo_info.find('photo').attrib['views'])
-#            print "===\nID:", photo_id, "Views:", str(views)
+#            print("===\nID:", photo_id, "Views:", str(views))
             added += process_photo(photo_id)
 
     except KeyboardInterrupt:
-        print "Keyboard interrupt"
+        print("Keyboard interrupt")
 
-    print added, "additions to groups"
+    print(added, "additions to groups")
 
 # End of file
