@@ -30,8 +30,8 @@ after_success:
 - coveralls
 - travis_retry pip install scrutinizer-ocular
 - ocular
-- pip install pep8 pyflakes
-- pep8 *.py
+- pip install pycodestyle pyflakes
+- pycodestyle *.py
 - pyflakes *.py
 
 env:
