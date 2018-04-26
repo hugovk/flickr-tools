@@ -73,13 +73,22 @@ def photo_url(flickr, photo, size):
     return(photo.attrib[url_size])
 
 
-def download(url, title, noclobber=False, number=None, directory=None):
-    if title:
-        file_name = title + ".jpg"
-        # Make Windows-safe
-        file_name = "".join(
+def make_windows_safe(file_name):
+    return "".join(
             c for c in file_name if c.isalnum() or c in [
                 ' ', '.', '-']).rstrip()
+
+
+def mkdir(directory):
+    if not os.path.isdir(directory):
+        os.mkdir(directory)
+
+
+def download(url, title, noclobber=False, number=None, directory=None):
+    print(directory)
+    if title:
+        file_name = title + ".jpg"
+        file_name = make_windows_safe(file_name)
     else:
         file_name = url.split('/')[-1]
 
@@ -90,6 +99,8 @@ def download(url, title, noclobber=False, number=None, directory=None):
         file_name = file_name[:200]
 
     if directory:
+        directory = make_windows_safe(directory)
+        mkdir(directory)
         file_name = os.path.join(directory, file_name)
 
     if noclobber and os.path.exists(file_name):
