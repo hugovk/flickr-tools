@@ -6,6 +6,7 @@ from __future__ import print_function
 import argparse
 import datetime
 import os
+import random
 import sys
 import yaml
 import webbrowser
@@ -97,6 +98,8 @@ def six_months_from(now):
 
 def find_photos(flickr, my_nsid, tweet, now, earliest_year):
     found = 0
+    # These look like "2012: http://flic.kr/p/bqhhhb":
+    tweetlets = []
     for year in range(now.year-1, earliest_year-1, -1):
         print("Checking", year)
 
@@ -109,25 +112,21 @@ def find_photos(flickr, my_nsid, tweet, now, earliest_year):
 #             ET.dump(photo)
             photo_id = int(photo.attrib['id'])
             url = flickrapi.shorturl.url(photo_id)
-            tweetlet = " " + str(year) + ": "
-
-            tweet += tweetlet + url
-
-            # The next [tweetlet + url] will always be the same length.
-            # Check if there's room for another now, so we can avoid
-            # an extra API call if possible.
-
-            # "A URL of any length will be altered to 22 characters,
-            # even if the link itself is less than 22 characters long."
-            # http://support.twitter.com/articles/78124-posting-links-in-a-tweet
-            if len(tweet) + len(tweetlet) + 22 > 140:
-                break
+            tweetlet = str(year) + ": " + url
+            tweetlets.append(tweetlet)
         else:
             print("No photo for", year)
 
-        print(tweet)
-
     print("Found", found, "photos")
+
+    # There's room for four tweetlets in a tweet
+    if len(tweetlets) > 4:
+        tweetlets = random.sample(tweetlets, 4)
+
+    # In random order
+    # tweet += " " + " ".join(sorted(tweetlets, reverse=True))
+    tweet += " " + " ".join(tweetlets)
+
     return found, tweet
 
 
