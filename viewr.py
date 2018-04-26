@@ -126,7 +126,7 @@ def process_photo(photo_id):
                         print("      Skip group until next time")
                         del VIEW_GROUPS[i]
 
-                except:
+                except Exception:
                     error = str(sys.exc_info()[1])
                     print("    Error", error)
 
@@ -134,7 +134,7 @@ def process_photo(photo_id):
             print("Remove from group", nsid, ":", min_views)
             try:
                 flickr.groups_pools_remove(photo_id=photo_id, group_id=nsid)
-            except:
+            except Exception:
                 pass
     return added
 
@@ -245,7 +245,7 @@ if __name__ == "__main__":
             photo_id = photo.get('id')
             try:
                 photo_info = flickr.photos_getInfo(photo_id=photo_id)
-            except:
+            except Exception:
                 # Let's just skip this photo then
                 continue
 

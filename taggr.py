@@ -7,7 +7,7 @@ import os
 import re
 import sys
 import time
-# import xml.etree.ElementTree as ET
+# import xml.etree.ElementTree as ET  # ET.dump(some xml object)
 
 # This script adds tags to Flickr.
 #
@@ -71,9 +71,9 @@ EXPANDABLES = [
     ]
 
 
-# cmd.exe cannot do Unicode so encode first
 def print_it(text):
-    if isinstance(text, unicode):
+    # Windows: cmd.exe cannot do Unicode so encode first
+    if sys.platform == "win32":
         print(text.encode('utf-8'))
     else:
         print(text)
@@ -118,7 +118,7 @@ def set_flickr_tags(photo_id, new_tags, old_tags):
             except flickrapi.FlickrError:
                 print("Flickr error:", sys.exc_info()[0])
                 # Move on to the next photo
-            except:
+            except Exception:
                 pass
         if len(fresh_tags) > 1:
             tag_s = " tags"
@@ -139,7 +139,7 @@ def set_machine_tags(photo_id):
     make, model, timestring = "", "", ""
     try:
         exif = flickr.photos_getExif(photo_id=photo_id)
-    except:
+    except Exception:
         return make, model, timestring
     exif_tags = exif.getchildren()[0].getchildren()
     machine_tags = []
@@ -156,6 +156,7 @@ def set_machine_tags(photo_id):
             if predicate == "Make" or predicate == "Model":
                 namespace = "camera"
                 if predicate == "Make":
+                    value = value.title()
                     make = value
                 elif predicate == "Model":
                     model = value
@@ -183,9 +184,9 @@ def get_make_model_strings(make, model):
     if make:
         camera_tags.append(make)
     if model:
-        camera_tags.append(model)
+        camera_tags.append('"' + model + '"')
     if make and model:
-        camera_tags.append('"'+make+' '+model+'"')
+        camera_tags.append('"' + make + ' ' + model + '"')
     return camera_tags
 
 
@@ -218,7 +219,7 @@ def set_standard_tags(photo_id, make, model, timestring, flickr_tags):
     normal_tags = ALWAYS_TAGS + get_make_model_strings(make, model)
 
     # Special cases
-    if make == "Nokia":
+    if make.lower() in ["nokia", "samsung"]:
         normal_tags.append("cameraphone")
 
     if model == "N8-00" or model == "808 PureView":
@@ -226,6 +227,16 @@ def set_standard_tags(photo_id, make, model, timestring, flickr_tags):
 
     if model == "N8-00":
         model = "N8"
+        new_tags = get_make_model_strings(make, model)
+        normal_tags = normal_tags + new_tags
+
+    if model == "SM-G950F":
+        new_tags = get_make_model_strings(make, model)
+        normal_tags = normal_tags + new_tags
+        model = "S8"
+        new_tags = get_make_model_strings(make, model)
+        normal_tags = normal_tags + new_tags
+        model = "Galaxy S8"
         new_tags = get_make_model_strings(make, model)
         normal_tags = normal_tags + new_tags
 
@@ -300,7 +311,7 @@ def set_geo_tags(photo_id, flickr_tags):
     except flickrapi.FlickrError:
         print("Flickr error:", sys.exc_info()[0])
         return
-    except:
+    except Exception:
         print("Error:", sys.exc_info()[0])
         return
 
@@ -406,7 +417,8 @@ if __name__ == "__main__":
             continue
         processed += 1
         if args.number and processed > args.number:
-            sys.exit(str(args.number) + " photos processed, exiting")
+            print(str(args.number) + " photos processed, exiting")
+            sys.exit()
 
         print("\nProcessing photo", count, ":", photo_id)
 
@@ -414,7 +426,7 @@ if __name__ == "__main__":
             info = flickr.photos_getInfo(photo_id=photo_id)
         except KeyboardInterrupt:
             print("Keyboard interrupt")
-        except:
+        except Exception:
             print("  Error getting photo info:", sys.exc_info())
             print("  Skipping")
             continue
@@ -430,7 +442,8 @@ if __name__ == "__main__":
             # Skip those previously processed
             if photo_has_partial_tag("meta:exif=", flickr_tags):
                 if not args.jatkuu:
-                    sys.exit("  Previously processed, exiting")
+                    print("  Previously processed, exiting")
+                    sys.exit()
                 print("  Previously processed, skipping")
                 continue
 

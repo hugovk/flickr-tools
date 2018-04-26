@@ -1,4 +1,6 @@
-﻿"""
+﻿#!/usr/bin/env python
+# coding=utf-8
+"""
 Create a set containing your photos that others marked favourite.
 Needs a Flickr Pro account.
 """
