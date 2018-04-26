@@ -58,6 +58,9 @@ if __name__ == '__main__':
         "-t", "--title", action="store_true",
         help="Use the title as the filename")
     parser.add_argument(
+        "-d", "--directory", action="store_true",
+        help="Use the title as the directory")
+    parser.add_argument(
         "-nc", "--noclobber", action="store_true",
         help="Don't clobber pre-exisiting files")
     parser.add_argument(
@@ -114,18 +117,22 @@ if __name__ == '__main__':
                 photo_title = photo.attrib['title']
             else:
                 photo_title = None
+            if args.directory:
+                photo_directory = photo_set.attrib['title']
+            else:
+                photo_directory = None
 
             if args.size == "o":
                 flickr_utils.download(
                     "http://farm%s.static.flickr.com/%s/%s_%s_o.jpg" %
                     (photo.attrib['farm'], photo.attrib['server'],
                         photo.attrib['id'], oSecret),
-                    photo_title, args.noclobber, number)
+                    photo_title, args.noclobber, number, photo_directory)
             else:
                 flickr_utils.download(
                     "http://farm%s.static.flickr.com/%s/%s_%s_%s.jpg" %
                     (photo.attrib['farm'], photo.attrib['server'],
                         photo.attrib['id'], secret, args.size),
-                    photo_title, args.noclobber, number)
+                    photo_title, args.noclobber, number, photo_directory)
 
 # End of file
