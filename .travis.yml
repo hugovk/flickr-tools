@@ -26,9 +26,8 @@ after_success:
 - coveralls
 - travis_retry pip install scrutinizer-ocular
 - ocular
-- pip install pycodestyle pyflakes
-- pycodestyle *.py
-- pyflakes *.py
+- pip install flake8
+- flake8
 
 env:
   global:
