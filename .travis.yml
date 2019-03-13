@@ -16,8 +16,6 @@ matrix:
   - python: pypy3
   fast_finish: true
 
-sudo: false
-
 install:
 - travis_retry pip install -r requirements.txt
 - travis_retry pip install coveralls
