@@ -1,62 +1,45 @@
 #!/usr/bin/env python3
 # coding=utf-8
 """
-Add non-free photos to an album based.
+Add non-free photos to an album.
 """
-from __future__ import print_function, unicode_literals
 import argparse
 import flickrapi  # http://www.stuvel.eu/flickrapi
 import os
 import sys
 
-import xml.etree.ElementTree as ET  # ET.dump()
+# import xml.etree.ElementTree as ET  # ET.dump()
 
 # from pprint import pprint
 
 # https://www.flickr.com/services/api/flickr.photos.licenses.getInfo.html
-LICENSE_All_Rights_Reserved = 0
-LICENSE_Attribution_NonCommercial_ShareAlike_License = 1
-LICENSE_Attribution_NonCommercial_License = 2
-LICENSE_Attribution_NonCommercial_NoDerivs_License = 3
-LICENSE_Attribution_License = 4
-LICENSE_Attribution_ShareAlike_License = 5
-LICENSE_Attribution_NoDerivs_License = 6
-LICENSE_No_known_copyright_restrictions = 7
-LICENSE_United_States_Government_Work = 8
-LICENSE_Public_Domain_Dedication_CC0 = 9
-LICENSE_Public_Domain_Mark = 10
-
-
-# cmd.exe cannot do Unicode so encode first
-def print_it(text):
-    if os.name == "nt":
-        print(text.encode("utf-8"))
-    else:
-        print(text)
+#  0 All Rights Reserved
+#  1 Attribution-NonCommercial-ShareAlike License
+#  2 Attribution-NonCommercial License
+#  3 Attribution-NonCommercial-NoDerivs License
+#  4 Attribution License
+#  5 Attribution-ShareAlike License
+#  6 Attribution-NoDerivs License
+#  7 No known copyright restrictions
+#  8 United States Government Work
+#  9 Public Domain Dedication (CC0)
+# 10 Public Domain Mark
 
 
 def create_and_add_to_set(flickr, photo_id):
     print("  Create and add to set")
+    set_id = None
     if not args.test:
         try:
             rsp = flickr.photosets_create(title="Non-free", primary_photo_id=photo_id)
             set_id = rsp.find("photoset").get("id")
             print("    Set created and photo added: ", set_id)
 
+        except (KeyboardInterrupt, SystemExit):
+            raise
         except flickrapi.FlickrError:
             error = str(sys.exc_info()[1])
             print("    Flickr", error)
-        #             if error == "Error: 4: Photo in maximum number of pools":
-        #                 print("      Skip photo")
-        #                 # Don't bother checking this photo any more
-        #                 continue
-        #             elif error == "Error: 5: Photo limit reached":
-        #                 # Don't bother checking this group again
-        #                 print("      Skip group until next time")
-        #                 del MAPPINGS[i]
-
-        except (KeyboardInterrupt, SystemExit):
-            raise
         except:
             error = str(sys.exc_info()[1])
             print("    Error", error)
@@ -73,20 +56,11 @@ def add_to_set(flickr, photo_id, set_id):
             print("    Photo added")
             added += 1
 
+        except (KeyboardInterrupt, SystemExit):
+            raise
         except flickrapi.FlickrError:
             error = str(sys.exc_info()[1])
             print("    Flickr", error)
-        #             if error == "Error: 4: Photo in maximum number of pools":
-        #                 print("      Skip photo")
-        #                 # Don't bother checking this photo any more
-        #                 continue
-        #             elif error == "Error: 5: Photo limit reached":
-        #                 # Don't bother checking this group again
-        #                 print("      Skip group until next time")
-        #                 del MAPPINGS[i]
-
-        except (KeyboardInterrupt, SystemExit):
-            raise
         except:
             error = str(sys.exc_info()[1])
             print("    Error", error)
@@ -95,20 +69,13 @@ def add_to_set(flickr, photo_id, set_id):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
-        description="This script adds photos to sets/albums.",
+        description="Add non-free photos to an album",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
-    # parser.add_argument(
-    #     "-nf",
-    #     "--non-free",
-    #     action="store_true",
-    #     help="Only show all-rights reserved",
-    # )
     parser.add_argument(
         "-n",
         "--number",
         type=int,
-        # default=20,
         help="Number of photos to process. If left blank, keep going",
     )
     parser.add_argument("-b", "--begin", type=int, default=1, help="Photo to begin at")
@@ -133,22 +100,9 @@ if __name__ == "__main__":
         "-x",
         "--test",
         action="store_true",
-        help="Test mode: go through the motions but don't add any tags",
-    )
-    parser.add_argument(
-        "-i",
-        "--info",
-        action="store_true",
-        help="Show information about my sets and exit",
+        help="Test mode: go through the motions but don't create or add to album",
     )
     args = parser.parse_args()
-
-    try:
-        import timing  # optional
-
-        assert timing  # avoid warnings
-    except ImportError:
-        pass
 
     api_key = os.environ["FLICKR_API_KEY"]
     api_secret = os.environ["FLICKR_SECRET"]
@@ -167,17 +121,6 @@ if __name__ == "__main__":
     print("My NSID:", my_nsid)
     set_resp = flickr.photosets_getList(user_id=my_nsid)
     sets_resp = set_resp.getchildren()[0].getchildren()
-    sets = {}
-
-    if args.info:
-        print("My sets:")
-        print("NSID\tName")
-        for set in sets_resp:
-            set_id = set.attrib["id"]
-            set_name = set.find("title").text
-            print("{}\t{}".format(set_id, set_name))
-
-        sys.exit()
 
     non_free_set_id = None
     for set in sets_resp:
@@ -192,7 +135,8 @@ if __name__ == "__main__":
     if not non_free_set_id:
         print("Non-free album doesn't exist, will create if needed")
 
-    number, processed, added = 0, 0, 0
+    number, processed, nonfree, added = 0, 0, 0, 0
+    print("Searching...")
     try:
         for photo in flickr.walk(
             tag_mode="all",
@@ -216,6 +160,7 @@ if __name__ == "__main__":
             if license >= 1:
                 # Has a free license, skip
                 continue
+            nonfree += 1
 
             try:
                 photo_info = flickr.photos_getInfo(photo_id=photo_id)
@@ -237,7 +182,7 @@ if __name__ == "__main__":
                 )
                 continue
 
-            print_it(photo_title)
+            print(photo_title)
             if not non_free_set_id:
                 non_free_set_id = create_and_add_to_set(flickr, photo_id)
                 added += 1
@@ -247,8 +192,8 @@ if __name__ == "__main__":
     except KeyboardInterrupt:
         print("Keyboard interrupt")
 
+    print(processed, "processed")
+    print(nonfree, "non-free")
     print(added, "additions to sets")
-
-    # TODO reorder photos in set
 
 # End of file
