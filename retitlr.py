@@ -30,7 +30,7 @@ if __name__ == "__main__":
         "-x",
         "--test",
         action="store_true",
-        help="Test mode: go through the motions but don't add any tags",
+        help="Test mode: go through the motions but don't retitle anything",
     )
     parser.add_argument("search", help="Text to search for")
     parser.add_argument("replace", help="Text to replace with")
