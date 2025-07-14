@@ -77,14 +77,6 @@ EXPANDABLES = [
 ]
 
 
-def print_it(text):
-    # Windows: cmd.exe cannot do Unicode so encode first
-    if sys.platform == "win32":
-        print(text.encode("utf-8"))
-    else:
-        print(text)
-
-
 def get_photo_tags(photo_info):
     """Return a list of tags from a photo's info"""
     tags = []
@@ -125,7 +117,7 @@ def set_flickr_tags(photo_id, new_tags, old_tags):
             except Exception:
                 pass
         s = "s" if len(fresh_tags) > 1 else ""
-        print_it(f"  Set {len(fresh_tags)} tag{s} for {photo_id}: {tag_string}")
+        print(f"  Set {len(fresh_tags)} tag{s} for {photo_id}: {tag_string}")
 
 
 def set_machine_tags(photo_id):
