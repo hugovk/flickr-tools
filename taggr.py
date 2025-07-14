@@ -124,11 +124,8 @@ def set_flickr_tags(photo_id, new_tags, old_tags):
                 # Move on to the next photo
             except Exception:
                 pass
-        if len(fresh_tags) > 1:
-            tag_s = " tags"
-        else:
-            tag_s = " tag"
-        print_it(f"  Set {len(fresh_tags)} {tag_s} for {photo_id}: {tag_string}")
+        s = "s" if len(fresh_tags) > 1 else ""
+        print_it(f"  Set {len(fresh_tags)} tag{s} for {photo_id}: {tag_string}")
 
 
 def set_machine_tags(photo_id):
