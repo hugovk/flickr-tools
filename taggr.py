@@ -241,6 +241,16 @@ def set_standard_tags(photo_id, make, model, timestring, flickr_tags):
         new_tags = get_make_model_strings(make, model)
         normal_tags = normal_tags + new_tags
 
+    if model == "SM-S901B":
+        new_tags = get_make_model_strings(make, model)
+        normal_tags = normal_tags + new_tags
+        model = "S22"
+        new_tags = get_make_model_strings(make, model)
+        normal_tags = normal_tags + new_tags
+        model = "Galaxy S22"
+        new_tags = get_make_model_strings(make, model)
+        normal_tags = normal_tags + new_tags
+
     # Tag expansions
     for expandable in EXPANDABLES:
         expand_tags(expandable[0], expandable[1], flickr_tags, normal_tags)
