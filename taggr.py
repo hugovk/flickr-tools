@@ -128,7 +128,7 @@ def set_flickr_tags(photo_id, new_tags, old_tags):
             tag_s = " tags"
         else:
             tag_s = " tag"
-        print_it(f"  Set {len(fresh_tags)} {tag_s}{tag_s} for {photo_id}: {tag_string}")
+        print_it(f"  Set {len(fresh_tags)} {tag_s} for {photo_id}: {tag_string}")
 
 
 def set_machine_tags(photo_id):
