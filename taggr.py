@@ -128,15 +128,7 @@ def set_flickr_tags(photo_id, new_tags, old_tags):
             tag_s = " tags"
         else:
             tag_s = " tag"
-        print_it(
-            "  Set "
-            + str(len(fresh_tags))
-            + tag_s
-            + " for "
-            + str(photo_id)
-            + ": "
-            + tag_string
-        )
+        print_it(f"  Set {len(fresh_tags)} {tag_s}{tag_s} for {photo_id}: {tag_string}")
 
 
 def set_machine_tags(photo_id):
@@ -171,16 +163,16 @@ def set_machine_tags(photo_id):
                 elif predicate == "Model":
                     model = value
 
-            machine_tag = '"' + namespace + ":" + predicate + "=" + value + '"'
+            machine_tag = f'"{namespace}:{predicate}={value}"'
             print("Got tag:", machine_tag)
             machine_tags.append(machine_tag)
 
     epoch_seconds = str(int(time.time()))
     if machine_tags:
-        print("  Got", len(machine_tags), "exif tags for", photo_id)
+        print(f"  Got {len(machine_tags)} exif tags for {photo_id}")
         machine_tags.append("meta:exif=" + epoch_seconds)
     else:
-        print("  Got no exif tags for", photo_id)
+        print(f"  Got no exif tags for {photo_id}")
         machine_tags.append("meta:exif=none")
 
     set_flickr_tags(photo_id, machine_tags, flickr_tags)
@@ -194,9 +186,9 @@ def get_make_model_strings(make, model):
     if make:
         camera_tags.append(make)
     if model:
-        camera_tags.append('"' + model + '"')
+        camera_tags.append(f'"{model}"')
     if make and model:
-        camera_tags.append('"' + make + " " + model + '"')
+        camera_tags.append(f'"{make} {model}"')
     return camera_tags
 
 
@@ -284,7 +276,7 @@ def set_title_desc_tags(photo_id, info, flickr_tags):
             new_tags.append(title)
         new_tags.append(title)
         if " " in title:
-            new_tags.append('"' + title + '"')
+            new_tags.append(f'"{title}"')
     if new_tags:
         set_flickr_tags(photo_id, new_tags, flickr_tags)
 
@@ -296,7 +288,7 @@ def set_title_desc_tags(photo_id, info, flickr_tags):
             if "," in description:
                 new_tags.append(description.replace(",", ""))  # Remove commas
             if " " in description:
-                new_tags.append('"' + description + '"')
+                new_tags.append(f'"{description}"')
         if new_tags:
             set_flickr_tags(photo_id, new_tags, flickr_tags)
 
@@ -336,15 +328,15 @@ def set_geo_tags(photo_id, flickr_tags):
 
     namespace = "geo"
     if neighbourhood:
-        new_tags.append('"' + namespace + ":neighbourhood=" + neighbourhood + '"')
+        new_tags.append(f'"{namespace}:neighbourhood={neighbourhood}"')
     if locality:
-        new_tags.append('"' + namespace + ":locality=" + locality + '"')
+        new_tags.append(f'"{namespace}:locality={locality}"')
     if county:
-        new_tags.append('"' + namespace + ":county=" + county + '"')
+        new_tags.append(f'"{namespace}:county={county}"')
     if region:
-        new_tags.append('"' + namespace + ":region=" + region + '"')
+        new_tags.append(f'"{namespace}:region={region}"')
     if country:
-        new_tags.append('"' + namespace + ":country=" + country + '"')
+        new_tags.append(f'"{namespace}:country={country}"')
 
     if new_tags:
         set_flickr_tags(photo_id, new_tags, flickr_tags)
@@ -429,10 +421,10 @@ if __name__ == "__main__":
             continue
         processed += 1
         if args.number and processed > args.number:
-            print(str(args.number) + " photos processed, exiting")
+            print(f"{args.number} photos processed, exiting")
             sys.exit()
 
-        print("\nProcessing photo", count, ":", photo_id)
+        print(f"\nProcessing photo {count}: {photo_id}")
 
         try:
             info = flickr.photos_getInfo(photo_id=photo_id)
@@ -440,7 +432,7 @@ if __name__ == "__main__":
             print("Keyboard interrupt")
             raise
         except Exception:
-            print("  Error getting photo info:", sys.exc_info())
+            print(f"  Error getting photo info: {sys.exc_info()}")
             print("  Skipping")
             continue
 
