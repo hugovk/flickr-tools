@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # coding=utf-8
 from __future__ import print_function
 import argparse
@@ -426,6 +426,7 @@ if __name__ == "__main__":
             info = flickr.photos_getInfo(photo_id=photo_id)
         except KeyboardInterrupt:
             print("Keyboard interrupt")
+            raise
         except Exception:
             print("  Error getting photo info:", sys.exc_info())
             print("  Skipping")
